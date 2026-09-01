@@ -14,7 +14,7 @@ const VideoCard = ({ video }) => {
       <div className="flex mt-3 gap-3">
         <Link to={`/channel/${video.channelId || 'unknown'}`}>
           <img 
-            src={video.uploader?.avatar || 'https://via.placeholder.com/150'} 
+            src={video.uploader?.avatar || 'https://picsum.photos/150'} 
             alt="channel avatar" 
             className="w-9 h-9 rounded-full object-cover flex-shrink-0"
           />

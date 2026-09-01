@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema({
   },
   avatar: {
     type: String,
-    default: 'https://via.placeholder.com/150'
+    default: () => `https://picsum.photos/seed/${new mongoose.Types.ObjectId()}/150`
   },
   channels: [{
     type: mongoose.Schema.Types.ObjectId,

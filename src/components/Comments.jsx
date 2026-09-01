@@ -27,7 +27,7 @@ const Comments = ({ comments = [], videoId, setComments }) => {
       {/* Add Comment Input */}
       <div className="flex gap-4 mb-8">
         <img 
-          src="https://via.placeholder.com/150" 
+          src="https://picsum.photos/150" 
           alt="Current user" 
           className="w-10 h-10 rounded-full"
         />

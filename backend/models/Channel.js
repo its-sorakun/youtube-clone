@@ -10,7 +10,7 @@ const channelSchema = new mongoose.Schema({
   },
   channelBanner: {
     type: String,
-    default: 'https://via.placeholder.com/800x200'
+    default: () => `https://picsum.photos/seed/${new mongoose.Types.ObjectId()}/800/200`
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,

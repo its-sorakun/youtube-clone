@@ -42,20 +42,31 @@ const Channel = () => {
     <div className="flex flex-col w-full max-w-7xl mx-auto pb-10">
       {/* Banner */}
       <div className="w-full h-32 md:h-56 overflow-hidden rounded-xl bg-gray-200">
-        <img 
-          src={channel.channelBanner} 
-          alt="Channel Banner" 
-          className="w-full h-full object-cover"
-        />
+        {channel.channelBanner && (
+          <img 
+            src={channel.channelBanner} 
+            alt="Channel Banner" 
+            className="w-full h-full object-cover"
+          />
+        )}
       </div>
 
       {/* Channel Header */}
       <div className="flex flex-col md:flex-row items-center md:items-start gap-6 mt-6 px-4 md:px-10">
-        <img 
-          src={channel.owner?.avatar || 'https://via.placeholder.com/150'} 
-          alt={channel.channelName} 
-          className="w-24 h-24 md:w-32 md:h-32 rounded-full object-cover"
-        />
+        {channel.owner?.avatar ? (
+          <img 
+            src={channel.owner.avatar} 
+            alt={channel.channelName} 
+            className="w-24 h-24 md:w-32 md:h-32 rounded-full object-cover shrink-0"
+          />
+        ) : (
+          <div className="w-24 h-24 md:w-32 md:h-32 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+            <svg viewBox="0 0 24 24" width="50%" height="50%" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+          </div>
+        )}
         <div className="flex flex-col items-center md:items-start flex-1 text-center md:text-left mt-2">
           <h1 className="text-3xl font-bold text-gray-900">{channel.channelName}</h1>
           <div className="text-gray-600 mt-1 mb-2">

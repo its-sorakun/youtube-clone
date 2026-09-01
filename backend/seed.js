@@ -26,50 +26,61 @@ const seedDB = async () => {
     
     console.log('Cleared existing database.');
 
-    // Create a dummy user to own these channels/videos
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash('password123', salt);
 
-    const dummyUser = new User({
+    // Create a fallback user and channel for orphaned videos
+    const fallbackUser = new User({
       username: 'SystemSeeder',
       email: 'seeder@system.com',
-      password: hashedPassword,
-      avatar: 'https://via.placeholder.com/150'
+      password: hashedPassword
     });
-    
-    await dummyUser.save();
-    console.log('Created dummy seeder user.');
+    await fallbackUser.save();
+
+    const fallbackChannel = new Channel({
+      channelName: "Extra Videos",
+      description: "Fallback for orphaned mock data",
+      owner: fallbackUser._id
+    });
+    await fallbackChannel.save();
+    fallbackUser.channels.push(fallbackChannel._id);
+    await fallbackUser.save();
+    console.log('Created fallback seeder user and channel.');
 
     // Seed mockChannels to MongoDB
     const channelMap = {}; // Map mock channelId to MongoDB _id
+    const userMap = {}; // Map mock channelId to MongoDB User _id
+    
     for (const mc of mockChannels) {
+      const sanitizedName = mc.channelName.replace(/\s+/g, '');
+      const user = new User({
+        username: sanitizedName,
+        email: `${sanitizedName.toLowerCase()}@system.com`,
+        password: hashedPassword
+      });
+      await user.save();
+
       const channel = new Channel({
         channelName: mc.channelName,
         description: mc.description,
-        channelBanner: mc.bannerUrl,
-        owner: dummyUser._id,
+        channelBanner: mc.bannerUrl, // Might be undefined, which triggers default
+        owner: user._id,
         subscribers: mc.subscribers || 1000
       });
       await channel.save();
       channelMap[mc.channelId] = channel._id;
+      userMap[mc.channelId] = user._id;
       
-      dummyUser.channels.push(channel._id);
+      user.channels.push(channel._id);
+      await user.save();
     }
-    await dummyUser.save();
-    console.log('Seeded channels.');
-
-    // Create a fallback channel for orphaned videos
-    const fallbackChannel = new Channel({
-      channelName: "Extra Videos",
-      description: "Fallback for orphaned mock data",
-      owner: dummyUser._id
-    });
-    await fallbackChannel.save();
+    console.log('Seeded unique users and channels.');
 
     // Seed mockVideos
     for (const mv of mockVideos) {
       // Find the corresponding channel ObjectId in our map, or use fallback
       const channelId = channelMap[mv.channelId] || fallbackChannel._id;
+      const uploaderId = userMap[mv.channelId] || fallbackUser._id;
 
       const video = new Video({
         title: mv.title,
@@ -79,15 +90,13 @@ const seedDB = async () => {
         category: mv.category || 'All',
         views: mv.views,
         likes: mv.likes,
-        uploader: dummyUser._id,
+        uploader: uploaderId,
         channelId: channelId
       });
       await video.save();
 
-      // If the channel exists, add video to channel
-      if (channelId) {
-        await Channel.findByIdAndUpdate(channelId, { $push: { videos: video._id } });
-      }
+      // Add video to channel
+      await Channel.findByIdAndUpdate(channelId, { $push: { videos: video._id } });
 
       // If it has comments, seed them
       if (mv.comments && mv.comments.length > 0) {
@@ -95,7 +104,7 @@ const seedDB = async () => {
           const comment = new Comment({
             text: mc.text,
             videoId: video._id,
-            userId: dummyUser._id
+            userId: fallbackUser._id // Just use fallback user for mock comments to keep it simple
           });
           await comment.save();
         }
