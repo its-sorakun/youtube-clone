@@ -1,25 +1,52 @@
 import React, { useEffect, useContext, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { SidebarContext } from '../context/SidebarContext.jsx';
-import { mockVideos } from '../data/mockData.js';
 import Comments from '../components/Comments.jsx';
+import api from '../api/axios.js';
 
 const VideoPlayer = () => {
   const { id } = useParams();
   const { setIsExpanded } = useContext(SidebarContext);
   const [video, setVideo] = useState(null);
+  const [comments, setComments] = useState([]);
+  const [recommended, setRecommended] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Automatically collapse sidebar when entering video player
     setIsExpanded(false);
     
-    // Find the video in our mock data
-    const foundVideo = mockVideos.find(v => v.videoId === id);
-    setVideo(foundVideo);
+    const fetchVideoData = async () => {
+      setLoading(true);
+      try {
+        const [videoRes, commentsRes, recommendedRes] = await Promise.all([
+          api.get(`/videos/${id}`),
+          api.get(`/comments/video/${id}`),
+          api.get('/videos')
+        ]);
+        
+        setVideo(videoRes.data);
+        setComments(commentsRes.data);
+        setRecommended(recommendedRes.data.filter(v => v._id !== id));
+      } catch (err) {
+        console.error("Failed to fetch video data", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchVideoData();
   }, [id, setIsExpanded]);
 
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center py-40">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black"></div>
+      </div>
+    );
+  }
+
   if (!video) {
-    return <div className="p-4 text-center">Loading video...</div>;
+    return <div className="p-4 text-center">Video not found.</div>;
   }
 
   return (
@@ -40,7 +67,7 @@ const VideoPlayer = () => {
         <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-4">
           {/* Channel Info */}
           <div className="flex items-center gap-3">
-            <Link to={`/channel/${video.channelId}`}>
+            <Link to={`/channel/${video.channelId?._id || 'unknown'}`}>
               <img 
                 src={video.uploader?.avatar || 'https://via.placeholder.com/150'} 
                 alt="Channel Avatar" 
@@ -48,12 +75,14 @@ const VideoPlayer = () => {
               />
             </Link>
             <div>
-              <Link to={`/channel/${video.channelId}`}>
+              <Link to={`/channel/${video.channelId?._id || 'unknown'}`}>
                 <h3 className="font-semibold text-gray-900 leading-tight hover:text-gray-700">
-                  {video.channelName}
+                  {video.channelId?.channelName || video.uploader?.username || 'Unknown Channel'}
                 </h3>
               </Link>
-              <p className="text-sm text-gray-600 leading-tight">1.2M subscribers</p>
+              <p className="text-sm text-gray-600 leading-tight">
+                {video.channelId?.subscribers?.toLocaleString() || 0} subscribers
+              </p>
             </div>
             <button className="bg-black text-white px-4 py-2 rounded-full font-medium ml-4 hover:bg-gray-800">
               Subscribe
@@ -84,14 +113,14 @@ const VideoPlayer = () => {
 
         {/* Comments Section */}
         <div className="mt-6">
-          <Comments comments={video.comments} />
+          <Comments comments={comments} videoId={id} setComments={setComments} />
         </div>
       </div>
       
       {/* Recommended Videos (Sidebar on desktop) */}
       <div className="w-full lg:w-[30%] flex flex-col gap-3">
-        {mockVideos.filter(v => v.videoId !== id).slice(0, 5).map(relatedVideo => (
-          <Link to={`/video/${relatedVideo.videoId}`} key={relatedVideo.videoId} className="flex gap-2 group">
+        {recommended.slice(0, 5).map(relatedVideo => (
+          <Link to={`/video/${relatedVideo._id}`} key={relatedVideo._id} className="flex gap-2 group">
             <div className="w-40 flex-shrink-0">
               <img 
                 src={relatedVideo.thumbnailUrl} 
@@ -103,8 +132,8 @@ const VideoPlayer = () => {
               <h4 className="font-medium text-sm text-gray-900 line-clamp-2 leading-tight">
                 {relatedVideo.title}
               </h4>
-              <p className="text-xs text-gray-600 mt-1">{relatedVideo.channelName}</p>
-              <p className="text-xs text-gray-600">{relatedVideo.views.toLocaleString()} views</p>
+              <p className="text-xs text-gray-600 mt-1">{relatedVideo.uploader?.username || 'Unknown'}</p>
+              <p className="text-xs text-gray-600">{relatedVideo.views?.toLocaleString() || 0} views</p>
             </div>
           </Link>
         ))}
