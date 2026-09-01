@@ -5,6 +5,7 @@ import App from './App.jsx';
 import Home from './pages/Home.jsx';
 import VideoPlayer from './pages/VideoPlayer.jsx';
 import Channel from './pages/Channel.jsx';
+import ChannelDashboard from './pages/ChannelDashboard.jsx';
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
 import './index.css';
@@ -21,6 +22,10 @@ const router = createBrowserRouter([
       {
         path: '/video/:id',
         element: <VideoPlayer />
+      },
+      {
+        path: '/channel/my-channel',
+        element: <ChannelDashboard />
       },
       {
         path: '/channel/:id',
