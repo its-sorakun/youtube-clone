@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext.jsx';
 import { SidebarContext } from '../context/SidebarContext.jsx';
@@ -6,12 +6,28 @@ import { SidebarContext } from '../context/SidebarContext.jsx';
 const Header = () => {
   const { user, logout } = useContext(AuthContext);
   const { toggleSidebar } = useContext(SidebarContext);
+  const [showDropdown, setShowDropdown] = useState(false);
   const navigate = useNavigate();
+  const dropdownRef = useRef(null);
 
   const handleLogout = () => {
     logout();
+    setShowDropdown(false);
     navigate('/');
   };
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <header className="flex justify-between items-center px-4 h-16 bg-white sticky top-0 z-50">
@@ -55,18 +71,39 @@ const Header = () => {
 
       <div>
         {user ? (
-          <div className="flex items-center gap-4">
-            <Link to={user.channels && user.channels.length > 0 ? `/channel/${user.channels[0]}` : "/channel/my-channel"} className="hover:underline text-sm font-medium">
-              {user.username}
-            </Link>
-            <button onClick={handleLogout} className="text-sm font-medium text-gray-600 hover:text-gray-900">
-              Sign out
+          <div className="relative" ref={dropdownRef}>
+            <button onClick={() => setShowDropdown(!showDropdown)} className="flex items-center text-blue-600 hover:text-blue-700 bg-blue-50 p-1.5 rounded-full">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
             </button>
-            <img src={user.avatar || 'https://via.placeholder.com/150'} alt="avatar" className="w-8 h-8 rounded-full" />
+            
+            {showDropdown && (
+              <div className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-50">
+                <div className="px-5 py-4 border-b border-gray-100 flex flex-col">
+                  <span className="text-base font-medium text-gray-900">{user.username}</span>
+                  <span className="text-sm text-gray-500">@{user.username}</span>
+                </div>
+                <div className="py-2">
+                  <button onClick={handleLogout} className="w-full px-5 py-2 text-left hover:bg-gray-100 flex items-center gap-4 text-sm text-gray-900">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                      <polyline points="16 17 21 12 16 7"></polyline>
+                      <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                    Sign out
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         ) : (
           <Link to="/login" className="flex items-center gap-2 border border-gray-300 text-blue-600 px-4 py-1.5 rounded-full hover:bg-blue-50 font-medium">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
             Sign in
           </Link>
         )}
