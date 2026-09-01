@@ -50,7 +50,7 @@ const Sidebar = () => {
               <hr className="my-2 border-gray-200" />
               <div className="px-3 py-2">
                 <h3 className="text-sm font-semibold text-gray-900 mb-2">You</h3>
-                <NavLink to="/channel/my-channel" className="flex items-center px-3 py-2 rounded-lg hover:bg-gray-100">
+                <NavLink to={user.channels && user.channels.length > 0 ? `/channel/${user.channels[0]}` : "/channel/my-channel"} className="flex items-center px-3 py-2 rounded-lg hover:bg-gray-100">
                   <span className="text-gray-900 ml-5 text-sm">Your Channel</span>
                 </NavLink>
               </div>

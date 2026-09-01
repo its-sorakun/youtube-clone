@@ -56,7 +56,7 @@ const Header = () => {
       <div>
         {user ? (
           <div className="flex items-center gap-4">
-            <Link to="/channel/my-channel" className="hover:underline text-sm font-medium">
+            <Link to={user.channels && user.channels.length > 0 ? `/channel/${user.channels[0]}` : "/channel/my-channel"} className="hover:underline text-sm font-medium">
               {user.username}
             </Link>
             <button onClick={handleLogout} className="text-sm font-medium text-gray-600 hover:text-gray-900">

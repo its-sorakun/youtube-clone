@@ -33,13 +33,18 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem('ytclone_user', JSON.stringify(userData));
   };
 
+  const updateUser = (userData) => {
+    setUser(userData);
+    localStorage.setItem('ytclone_user', JSON.stringify(userData));
+  };
+
   const logout = () => {
     setToken(null);
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, logout, loading }}>
+    <AuthContext.Provider value={{ user, token, login, logout, updateUser, loading }}>
       {!loading && children}
     </AuthContext.Provider>
   );

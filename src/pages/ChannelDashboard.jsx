@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import api from '../api/axios.js';
 
 const ChannelDashboard = () => {
-  const { user } = useContext(AuthContext);
+  const { user, updateUser } = useContext(AuthContext);
   const navigate = useNavigate();
   
   // Find if user already has a channel in our mock data
@@ -25,6 +25,9 @@ const ChannelDashboard = () => {
     try {
       const res = await api.post('/channels', formData);
       alert("Channel created successfully!");
+      if (updateUser) {
+        updateUser({ ...user, channels: [...(user.channels || []), res.data._id] });
+      }
       navigate(`/channel/${res.data._id}`);
     } catch (err) {
       console.error(err);
