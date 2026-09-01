@@ -12,12 +12,42 @@ export const categories = [
   "Recently uploaded"
 ];
 
+export const mockChannels = [
+  {
+    channelId: "channel01",
+    channelName: "Code with John",
+    ownerId: "user01",
+    avatar: "https://picsum.photos/seed/johndoe/150/150",
+    bannerUrl: "https://picsum.photos/seed/codebanner/1200/300",
+    description: "I make videos about React, JavaScript, and web development. Subscribe for weekly tutorials!",
+    subscribers: 154000
+  },
+  {
+    channelId: "channel02",
+    channelName: "ProGamerz",
+    ownerId: "gamer01",
+    avatar: "https://picsum.photos/seed/gamerpro/150/150",
+    bannerUrl: "https://picsum.photos/seed/gamebanner/1200/300",
+    description: "The best gaming highlights, let's plays, and reviews.",
+    subscribers: 2450000
+  },
+  {
+    channelId: "channel03",
+    channelName: "ChillVibes",
+    ownerId: "dj01",
+    avatar: "https://picsum.photos/seed/djchill/150/150",
+    bannerUrl: "https://picsum.photos/seed/chillbanner/1200/300",
+    description: "24/7 Lo-Fi beats to relax, study, and code to.",
+    subscribers: 5000000
+  }
+];
+
 export const mockVideos = [
   {
     videoId: "video01",
     title: "Learn React in 30 Minutes",
     thumbnailUrl: "https://picsum.photos/seed/react/640/360",
-    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+    videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4",
     description: "A quick tutorial to get started with React.",
     channelId: "channel01",
     channelName: "Code with John",
@@ -43,7 +73,7 @@ export const mockVideos = [
     videoId: "video02",
     title: "Top 10 Gaming Moments of 2024",
     thumbnailUrl: "https://picsum.photos/seed/gaming/640/360",
-    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+    videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4",
     description: "The most epic gaming moments caught on tape.",
     channelId: "channel02",
     channelName: "ProGamerz",
@@ -62,7 +92,7 @@ export const mockVideos = [
     videoId: "video03",
     title: "Lo-Fi Beats to Code To",
     thumbnailUrl: "https://picsum.photos/seed/lofi/640/360",
-    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+    videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4",
     description: "Chill beats to help you focus.",
     channelId: "channel03",
     channelName: "ChillVibes",
@@ -81,7 +111,7 @@ export const mockVideos = [
     videoId: "video04",
     title: "Breaking News: Tech Conference 2024",
     thumbnailUrl: "https://picsum.photos/seed/news/640/360",
-    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+    videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4",
     description: "Live coverage of the biggest tech conference.",
     channelId: "channel04",
     channelName: "TechNews Network",
@@ -100,7 +130,7 @@ export const mockVideos = [
     videoId: "video05",
     title: "Advanced React Router Hooks",
     thumbnailUrl: "https://picsum.photos/seed/router/640/360",
-    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
+    videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4",
     description: "Deep dive into React Router.",
     channelId: "channel01",
     channelName: "Code with John",
@@ -119,7 +149,7 @@ export const mockVideos = [
     videoId: "video06",
     title: "World Cup Finals Highlights",
     thumbnailUrl: "https://picsum.photos/seed/sports/640/360",
-    videoUrl: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4",
+    videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4",
     description: "All the best moments from the finals.",
     channelId: "channel05",
     channelName: "SportsCenter",
