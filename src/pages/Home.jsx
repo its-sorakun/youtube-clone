@@ -1,13 +1,30 @@
-import React, { useState } from 'react';
-import { categories, mockVideos } from '../data/mockData.js';
+import React, { useState, useEffect } from 'react';
+import { categories } from '../data/mockData.js';
 import VideoCard from '../components/VideoCard.jsx';
+import api from '../api/axios.js';
 
 const Home = () => {
   const [activeCategory, setActiveCategory] = useState('All');
+  const [videos, setVideos] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const filteredVideos = activeCategory === 'All' 
-    ? mockVideos 
-    : mockVideos.filter(video => video.category === activeCategory);
+  useEffect(() => {
+    const fetchVideos = async () => {
+      setLoading(true);
+      try {
+        const res = await api.get('/videos', {
+          params: { category: activeCategory !== 'All' ? activeCategory : undefined }
+        });
+        setVideos(res.data);
+      } catch (err) {
+        console.error("Failed to fetch videos", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchVideos();
+  }, [activeCategory]);
 
   return (
     <div className="flex flex-col h-full">
@@ -29,11 +46,21 @@ const Home = () => {
       </div>
 
       {/* Video Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-8">
-        {filteredVideos.map((video) => (
-          <VideoCard key={video.videoId} video={video} />
-        ))}
-      </div>
+      {loading ? (
+        <div className="flex justify-center items-center py-20">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black"></div>
+        </div>
+      ) : videos.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-8">
+          {videos.map((video) => (
+            <VideoCard key={video._id} video={video} />
+          ))}
+        </div>
+      ) : (
+        <div className="text-center py-20 text-gray-500">
+          No videos found for this category.
+        </div>
+      )}
     </div>
   );
 };
