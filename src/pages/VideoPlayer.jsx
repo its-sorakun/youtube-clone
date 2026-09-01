@@ -56,12 +56,39 @@ const VideoPlayer = () => {
       {/* Main Video Section */}
       <div className="flex-1 w-full lg:w-[70%]">
         <div className="w-full aspect-video bg-black rounded-xl overflow-hidden shadow-lg">
-          <video 
-            controls 
-            autoPlay 
-            className="w-full h-full object-contain"
-            src={video.videoUrl}
-          ></video>
+          {(() => {
+            // Check if it's a YouTube URL and extract the ID
+            const getYouTubeId = (url) => {
+              if (!url) return null;
+              const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+              const match = url.match(regExp);
+              return (match && match[2].length === 11) ? match[2] : null;
+            };
+
+            const ytId = getYouTubeId(video.videoUrl);
+
+            if (ytId) {
+              return (
+                <iframe 
+                  className="w-full h-full"
+                  src={`https://www.youtube.com/embed/${ytId}?autoplay=1`} 
+                  title="YouTube video player" 
+                  frameBorder="0" 
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                  allowFullScreen
+                ></iframe>
+              );
+            } else {
+              return (
+                <video 
+                  controls 
+                  autoPlay 
+                  className="w-full h-full object-contain"
+                  src={video.videoUrl}
+                ></video>
+              );
+            }
+          })()}
         </div>
         
         <h1 className="text-xl font-bold mt-4 mb-2 text-gray-900">{video.title}</h1>
@@ -129,7 +156,7 @@ const VideoPlayer = () => {
         {/* Description Box */}
         <div className="bg-gray-100 rounded-xl p-4 mt-2">
           <p className="font-medium text-sm text-gray-900 mb-1">
-            {video.views.toLocaleString()} views • {new Date(video.uploadDate).toLocaleDateString()}
+            {video.views.toLocaleString()} views • {new Date(video.createdAt).toLocaleDateString()}
           </p>
           <p className="text-sm text-gray-800 whitespace-pre-wrap">{video.description}</p>
         </div>
