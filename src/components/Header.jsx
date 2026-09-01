@@ -1,12 +1,20 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext.jsx';
 
 const Header = () => {
+  const { user, logout } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
+
   return (
     <header className="flex justify-between items-center px-4 h-16 bg-white sticky top-0 z-50">
       <div className="flex items-center gap-4">
         <button className="p-2 hover:bg-gray-100 rounded-full">
-          {/* Hamburger icon */}
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
         </button>
         <Link to="/" className="flex items-center gap-1">
@@ -28,10 +36,22 @@ const Header = () => {
       </div>
 
       <div>
-        <Link to="/login" className="flex items-center gap-2 border border-gray-300 text-blue-600 px-4 py-1.5 rounded-full hover:bg-blue-50 font-medium">
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-          Sign in
-        </Link>
+        {user ? (
+          <div className="flex items-center gap-4">
+            <Link to="/channel/my-channel" className="hover:underline text-sm font-medium">
+              {user.username}
+            </Link>
+            <button onClick={handleLogout} className="text-sm font-medium text-gray-600 hover:text-gray-900">
+              Sign out
+            </button>
+            <img src={user.avatar || 'https://via.placeholder.com/150'} alt="avatar" className="w-8 h-8 rounded-full" />
+          </div>
+        ) : (
+          <Link to="/login" className="flex items-center gap-2 border border-gray-300 text-blue-600 px-4 py-1.5 rounded-full hover:bg-blue-50 font-medium">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            Sign in
+          </Link>
+        )}
       </div>
     </header>
   );
