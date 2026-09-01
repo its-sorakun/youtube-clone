@@ -1,28 +1,49 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { mockChannels, mockVideos } from '../data/mockData.js';
 import VideoCard from '../components/VideoCard.jsx';
+import api from '../api/axios.js';
 
 const Channel = () => {
   const { id } = useParams();
+  const [channel, setChannel] = useState(null);
+  const [loading, setLoading] = useState(true);
   
-  const channel = mockChannels.find(c => c.channelId === id) || {
-    channelId: id,
-    channelName: "Unknown Channel",
-    avatar: "https://via.placeholder.com/150",
-    bannerUrl: "https://via.placeholder.com/1200x300",
-    description: "This channel does not exist in our mock data.",
-    subscribers: 0
-  };
+  useEffect(() => {
+    const fetchChannel = async () => {
+      setLoading(true);
+      try {
+        const res = await api.get(`/channels/${id}`);
+        setChannel(res.data);
+      } catch (err) {
+        console.error("Failed to fetch channel", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchChannel();
+  }, [id]);
 
-  const channelVideos = mockVideos.filter(v => v.channelId === id);
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center py-40">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black"></div>
+      </div>
+    );
+  }
+
+  if (!channel) {
+    return <div className="p-4 text-center">Channel not found.</div>;
+  }
+
+  const channelVideos = channel.videos || [];
 
   return (
     <div className="flex flex-col w-full max-w-7xl mx-auto pb-10">
       {/* Banner */}
-      <div className="w-full h-32 md:h-56 overflow-hidden rounded-xl">
+      <div className="w-full h-32 md:h-56 overflow-hidden rounded-xl bg-gray-200">
         <img 
-          src={channel.bannerUrl} 
+          src={channel.channelBanner} 
           alt="Channel Banner" 
           className="w-full h-full object-cover"
         />
@@ -31,7 +52,7 @@ const Channel = () => {
       {/* Channel Header */}
       <div className="flex flex-col md:flex-row items-center md:items-start gap-6 mt-6 px-4 md:px-10">
         <img 
-          src={channel.avatar} 
+          src={channel.owner?.avatar || 'https://via.placeholder.com/150'} 
           alt={channel.channelName} 
           className="w-24 h-24 md:w-32 md:h-32 rounded-full object-cover"
         />
@@ -65,7 +86,7 @@ const Channel = () => {
         {channelVideos.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {channelVideos.map(video => (
-              <VideoCard key={video.videoId} video={video} />
+              <VideoCard key={video._id} video={video} />
             ))}
           </div>
         ) : (
