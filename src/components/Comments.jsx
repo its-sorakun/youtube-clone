@@ -1,15 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import api from '../api/axios.js';
+import { AuthContext } from '../context/AuthContext.jsx';
 
-const Comments = ({ comments = [] }) => {
+const Comments = ({ comments = [], videoId, setComments }) => {
   const [newComment, setNewComment] = useState('');
+  const { user } = useContext(AuthContext);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!newComment.trim()) return;
+    if (!newComment.trim() || !videoId || !user) return;
     
-    // In a real app, this would be an API call
-    console.log("Adding comment:", newComment);
-    setNewComment('');
+    try {
+      const res = await api.post('/comments', { text: newComment, videoId });
+      setComments(prev => [res.data, ...prev]);
+      setNewComment('');
+    } catch (err) {
+      console.error("Failed to post comment", err);
+      alert("Failed to post comment. Are you logged in?");
+    }
   };
 
   return (
@@ -53,17 +61,17 @@ const Comments = ({ comments = [] }) => {
       {/* Comments List */}
       <div className="flex flex-col gap-6">
         {comments.map((comment) => (
-          <div key={comment.commentId} className="flex gap-4">
+          <div key={comment._id} className="flex gap-4">
             <img 
-              src={`https://picsum.photos/seed/${comment.userId}/150/150`} 
+              src={comment.userId?.avatar || `https://picsum.photos/seed/${comment.userId?._id}/150/150`} 
               alt="User Avatar" 
-              className="w-10 h-10 rounded-full"
+              className="w-10 h-10 rounded-full object-cover"
             />
             <div>
               <div className="flex items-baseline gap-2 mb-1">
-                <span className="font-medium text-[13px]">@{comment.userId}</span>
+                <span className="font-medium text-[13px]">@{comment.userId?.username || 'unknown'}</span>
                 <span className="text-xs text-gray-500">
-                  {new Date(comment.timestamp).toLocaleDateString()}
+                  {new Date(comment.createdAt || comment.timestamp).toLocaleDateString()}
                 </span>
               </div>
               <p className="text-sm text-gray-900">{comment.text}</p>
