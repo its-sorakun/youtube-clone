@@ -8,15 +8,12 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem('ytclone_token') || null);
   const [loading, setLoading] = useState(true);
 
-  // Configure axios defaults when token changes
   useEffect(() => {
     if (token) {
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       localStorage.setItem('ytclone_token', token);
       
-      // In a real app, you might want to fetch user profile here using the token
-      // For now, we will rely on the user object returned during login/register
-      // If we only have a token (e.g. on refresh), we can restore from a saved user object
+      // Restore cached user profile on page refresh to avoid an extra /me API request.
       const savedUser = localStorage.getItem('ytclone_user');
       if (savedUser) {
         setUser(JSON.parse(savedUser));
