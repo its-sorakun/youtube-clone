@@ -11,7 +11,7 @@ const api = axios.create({
 // Add a request interceptor to automatically attach the JWT token
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('ytclone_token');
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`;
     }
@@ -28,8 +28,8 @@ api.interceptors.response.use(
   (error) => {
     if (error.response && error.response.status === 401) {
       // If we get an unauthorized error, clear the token and force re-login
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
+      localStorage.removeItem('ytclone_token');
+      localStorage.removeItem('ytclone_user');
       window.location.href = '/login';
     }
     return Promise.reject(error);
