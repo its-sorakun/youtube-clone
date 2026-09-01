@@ -1,9 +1,11 @@
 import React, { useContext } from 'react';
 import { NavLink } from 'react-router-dom';
 import { SidebarContext } from '../context/SidebarContext.jsx';
+import { AuthContext } from '../context/AuthContext.jsx';
 
 const Sidebar = () => {
   const { isExpanded } = useContext(SidebarContext);
+  const { user } = useContext(AuthContext);
 
   const navItems = [
     { name: 'Home', path: '/', icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg> },
@@ -42,6 +44,18 @@ const Sidebar = () => {
               <span className="text-gray-900 ml-5 text-sm">Sports</span>
             </NavLink>
           </div>
+          
+          {user && (
+            <>
+              <hr className="my-2 border-gray-200" />
+              <div className="px-3 py-2">
+                <h3 className="text-sm font-semibold text-gray-900 mb-2">You</h3>
+                <NavLink to="/channel/my-channel" className="flex items-center px-3 py-2 rounded-lg hover:bg-gray-100">
+                  <span className="text-gray-900 ml-5 text-sm">Your Channel</span>
+                </NavLink>
+              </div>
+            </>
+          )}
         </>
       )}
     </aside>
