@@ -12,8 +12,13 @@ const VideoCard = ({ video }) => {
         />
       </Link>
       <div className="flex mt-3 gap-3">
-        {/* Mock Avatar */}
-        <div className="w-9 h-9 rounded-full bg-gray-300 flex-shrink-0"></div>
+        <Link to={`/channel/${video.channelId || 'unknown'}`}>
+          <img 
+            src={video.uploader?.avatar || 'https://via.placeholder.com/150'} 
+            alt="channel avatar" 
+            className="w-9 h-9 rounded-full object-cover flex-shrink-0"
+          />
+        </Link>
         <div className="flex flex-col">
           <Link to={`/video/${video.videoId || video._id}`}>
             <h3 className="font-semibold text-gray-900 line-clamp-2 leading-tight">
