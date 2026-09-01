@@ -1,38 +1,39 @@
 import React, { useState, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext.jsx';
-import { mockChannels } from '../data/mockData.js';
 import { useNavigate } from 'react-router-dom';
+import api from '../api/axios.js';
 
 const ChannelDashboard = () => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   
   // Find if user already has a channel in our mock data
-  const existingChannel = user ? mockChannels.find(c => c.ownerId === user.id || c.channelName === user.username) : null;
+  const existingChannel = null; // To support editing, we'd need a GET /users/me route which is out of scope for now.
 
   const [formData, setFormData] = useState({
     channelName: existingChannel?.channelName || '',
     description: existingChannel?.description || '',
-    bannerUrl: existingChannel?.bannerUrl || ''
+    channelBanner: existingChannel?.bannerUrl || ''
   });
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
-    console.log("Saving channel data:", formData);
-    alert("Channel saved successfully (Mock UI)");
-    // In a real app, this would be an Axios PUT/POST to /api/channels
+    try {
+      const res = await api.post('/channels', formData);
+      alert("Channel created successfully!");
+      navigate(`/channel/${res.data._id}`);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to create channel: " + (err.response?.data?.message || err.message));
+    }
   };
 
   const handleDelete = () => {
-    if (window.confirm("Are you sure you want to delete your channel? This cannot be undone.")) {
-      console.log("Deleting channel for user", user?.username);
-      alert("Channel deleted successfully (Mock UI)");
-      navigate('/');
-    }
+    // Out of scope for this phase since we only implemented POST /channels
   };
 
   if (!user) {
@@ -87,13 +88,13 @@ const ChannelDashboard = () => {
 
           {/* Banner URL */}
           <div className="flex flex-col gap-2">
-            <label htmlFor="bannerUrl" className="font-semibold text-gray-800">Banner Image URL</label>
+            <label htmlFor="channelBanner" className="font-semibold text-gray-800">Banner Image URL</label>
             <p className="text-xs text-gray-500">This image will appear across the top of your channel.</p>
             <input 
               type="url" 
-              id="bannerUrl"
-              name="bannerUrl"
-              value={formData.bannerUrl}
+              id="channelBanner"
+              name="channelBanner"
+              value={formData.channelBanner}
               onChange={handleChange}
               className="border border-gray-300 rounded-lg p-3 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
               placeholder="https://example.com/banner.jpg"
