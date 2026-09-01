@@ -1,12 +1,14 @@
 import React, { useEffect, useContext, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { SidebarContext } from '../context/SidebarContext.jsx';
+import { AuthContext } from '../context/AuthContext.jsx';
 import Comments from '../components/Comments.jsx';
 import api from '../api/axios.js';
 
 const VideoPlayer = () => {
   const { id } = useParams();
   const { setIsExpanded } = useContext(SidebarContext);
+  const { user } = useContext(AuthContext);
   const [video, setVideo] = useState(null);
   const [comments, setComments] = useState([]);
   const [recommended, setRecommended] = useState([]);
@@ -92,12 +94,33 @@ const VideoPlayer = () => {
           {/* Action Buttons */}
           <div className="flex items-center gap-2">
             <div className="flex items-center bg-gray-100 rounded-full">
-              <button className="flex items-center gap-2 px-4 py-2 hover:bg-gray-200 rounded-l-full border-r border-gray-300 font-medium text-sm">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"></path></svg>
+              <button 
+                onClick={async () => {
+                  try {
+                    const res = await api.put(`/videos/${id}/like`);
+                    setVideo(prev => ({ ...prev, likes: res.data.likes, likedBy: res.data.likedBy, dislikes: res.data.dislikes, dislikedBy: res.data.dislikedBy }));
+                  } catch (err) {
+                    alert("Please log in to like this video");
+                  }
+                }}
+                className={`flex items-center gap-2 px-4 py-2 hover:bg-gray-200 rounded-l-full border-r border-gray-300 font-medium text-sm ${video.likedBy?.includes(user?.id || user?._id) ? 'text-blue-600 bg-gray-200' : ''}`}
+              >
+                <svg className="w-5 h-5" fill={video.likedBy?.includes(user?.id || user?._id) ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"></path></svg>
                 {video.likes}
               </button>
-              <button className="flex items-center px-4 py-2 hover:bg-gray-200 rounded-r-full font-medium">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018a2 2 0 01.485.06l3.76.94m-7 10v5a2 2 0 002 2h.096c.5 0 .905-.405.905-.904 0-.715.211-1.413.608-2.008L17 13V4m-7 10h2m5-10h2a2 2 0 012 2v6a2 2 0 01-2 2h-2.5"></path></svg>
+              <button 
+                onClick={async () => {
+                  try {
+                    const res = await api.put(`/videos/${id}/dislike`);
+                    setVideo(prev => ({ ...prev, likes: res.data.likes, likedBy: res.data.likedBy, dislikes: res.data.dislikes, dislikedBy: res.data.dislikedBy }));
+                  } catch (err) {
+                    alert("Please log in to dislike this video");
+                  }
+                }}
+                className={`flex items-center gap-2 px-4 py-2 hover:bg-gray-200 rounded-r-full font-medium text-sm ${video.dislikedBy?.includes(user?.id || user?._id) ? 'text-blue-600 bg-gray-200' : ''}`}
+              >
+                <svg className="w-5 h-5" fill={video.dislikedBy?.includes(user?.id || user?._id) ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018a2 2 0 01.485.06l3.76.94m-7 10v5a2 2 0 002 2h.096c.5 0 .905-.405.905-.904 0-.715.211-1.413.608-2.008L17 13V4m-7 10h2m5-10h2a2 2 0 012 2v6a2 2 0 01-2 2h-2.5"></path></svg>
+                {video.dislikes}
               </button>
             </div>
           </div>

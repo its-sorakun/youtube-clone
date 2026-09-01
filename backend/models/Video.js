@@ -24,10 +24,18 @@ const videoSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
+  likedBy: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }],
   dislikes: {
     type: Number,
     default: 0
   },
+  dislikedBy: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }],
   category: {
     type: String,
     default: 'General'

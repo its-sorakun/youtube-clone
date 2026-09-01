@@ -68,11 +68,27 @@ router.post('/', verifyToken, async (req, res) => {
 // Like video (requires auth)
 router.put('/:id/like', verifyToken, async (req, res) => {
   try {
-    const video = await Video.findByIdAndUpdate(
-      req.params.id, 
-      { $inc: { likes: 1 } }, 
-      { new: true }
-    );
+    const video = await Video.findById(req.params.id);
+    if (!video) return res.status(404).json({ message: 'Video not found' });
+    
+    const userId = req.user.id;
+    const hasLiked = video.likedBy && video.likedBy.includes(userId);
+    const hasDisliked = video.dislikedBy && video.dislikedBy.includes(userId);
+    
+    if (hasLiked) {
+      video.likes -= 1;
+      video.likedBy.pull(userId);
+    } else {
+      video.likes += 1;
+      if (!video.likedBy) video.likedBy = [];
+      video.likedBy.push(userId);
+      if (hasDisliked) {
+        video.dislikes -= 1;
+        video.dislikedBy.pull(userId);
+      }
+    }
+    
+    await video.save();
     res.json(video);
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
@@ -82,11 +98,27 @@ router.put('/:id/like', verifyToken, async (req, res) => {
 // Dislike video (requires auth)
 router.put('/:id/dislike', verifyToken, async (req, res) => {
   try {
-    const video = await Video.findByIdAndUpdate(
-      req.params.id, 
-      { $inc: { dislikes: 1 } }, 
-      { new: true }
-    );
+    const video = await Video.findById(req.params.id);
+    if (!video) return res.status(404).json({ message: 'Video not found' });
+    
+    const userId = req.user.id;
+    const hasLiked = video.likedBy && video.likedBy.includes(userId);
+    const hasDisliked = video.dislikedBy && video.dislikedBy.includes(userId);
+    
+    if (hasDisliked) {
+      video.dislikes -= 1;
+      video.dislikedBy.pull(userId);
+    } else {
+      video.dislikes += 1;
+      if (!video.dislikedBy) video.dislikedBy = [];
+      video.dislikedBy.push(userId);
+      if (hasLiked) {
+        video.likes -= 1;
+        video.likedBy.pull(userId);
+      }
+    }
+    
+    await video.save();
     res.json(video);
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
