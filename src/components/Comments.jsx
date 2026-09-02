@@ -26,11 +26,19 @@ const Comments = ({ comments = [], videoId, setComments }) => {
       
       {/* Add Comment Input */}
       <div className="flex gap-4 mb-8">
-        <img 
-          src={user?.avatar || "https://picsum.photos/150"} 
-          alt="Current user" 
-          className="w-10 h-10 rounded-full object-cover"
-        />
+        {user ? (
+          <img 
+            src={user.avatar || "https://picsum.photos/150"} 
+            alt="Current user" 
+            className="w-10 h-10 rounded-full object-cover"
+          />
+        ) : (
+          <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden flex-shrink-0">
+            <svg className="w-7 h-7 text-gray-400 mt-2" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+            </svg>
+          </div>
+        )}
         <form onSubmit={handleSubmit} className="flex-1">
           <input 
             type="text" 
