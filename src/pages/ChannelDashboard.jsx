@@ -1,10 +1,12 @@
-import React, { useState, useContext } from 'react';
-import { AuthContext } from '../context/AuthContext.jsx';
+import React, { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/axios.js';
+import { updateUser } from '../store/authSlice';
 
 const ChannelDashboard = () => {
-  const { user, updateUser } = useContext(AuthContext);
+  const user = useSelector((state) => state.auth.user);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   
   // Find if user already has a channel in our mock data
@@ -25,9 +27,7 @@ const ChannelDashboard = () => {
     try {
       const res = await api.post('/channels', formData);
       alert("Channel created successfully!");
-      if (updateUser) {
-        updateUser({ ...user, channels: [...(user.channels || []), res.data._id] });
-      }
+      dispatch(updateUser({ ...user, channels: [...(user.channels || []), res.data._id] }));
       navigate(`/channel/${res.data._id}`);
     } catch (err) {
       console.error(err);

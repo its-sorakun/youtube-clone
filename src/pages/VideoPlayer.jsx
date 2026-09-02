@@ -1,21 +1,21 @@
-import React, { useEffect, useContext, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { SidebarContext } from '../context/SidebarContext.jsx';
-import { AuthContext } from '../context/AuthContext.jsx';
+import { useSelector, useDispatch } from 'react-redux';
+import { setSidebarExpanded } from '../store/sidebarSlice';
 import Comments from '../components/Comments.jsx';
 import api from '../api/axios.js';
 
 const VideoPlayer = () => {
   const { id } = useParams();
-  const { setIsExpanded } = useContext(SidebarContext);
-  const { user } = useContext(AuthContext);
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.user);
   const [video, setVideo] = useState(null);
   const [comments, setComments] = useState([]);
   const [recommended, setRecommended] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setIsExpanded(false);
+    dispatch(setSidebarExpanded(false));
     
     const fetchVideoData = async () => {
       setLoading(true);

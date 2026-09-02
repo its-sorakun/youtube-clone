@@ -1,12 +1,13 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
-import { AuthContext } from '../context/AuthContext.jsx';
+import { useDispatch } from 'react-redux';
+import { loginUser } from '../store/authSlice';
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
-  const { login } = useContext(AuthContext);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -19,7 +20,7 @@ const Login = () => {
     
     try {
       const res = await axios.post('http://localhost:5000/api/auth/login', formData);
-      login(res.data.token, res.data.user);
+      dispatch(loginUser({ token: res.data.token, user: res.data.user }));
       navigate('/');
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed');

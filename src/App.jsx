@@ -1,12 +1,11 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Outlet } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import Header from './components/Header.jsx';
 import Sidebar from './components/Sidebar.jsx';
-import { AuthProvider } from './context/AuthContext.jsx';
-import { SidebarProvider, SidebarContext } from './context/SidebarContext.jsx';
 
 const AppLayout = () => {
-  const { isExpanded } = useContext(SidebarContext);
+  const isExpanded = useSelector((state) => state.sidebar.isExpanded);
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col font-sans">
@@ -22,13 +21,7 @@ const AppLayout = () => {
 };
 
 function App() {
-  return (
-    <AuthProvider>
-      <SidebarProvider>
-        <AppLayout />
-      </SidebarProvider>
-    </AuthProvider>
-  );
+  return <AppLayout />;
 }
 
 export default App;
