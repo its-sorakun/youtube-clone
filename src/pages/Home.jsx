@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { categories } from '../data/mockData.js';
 import VideoCard from '../components/VideoCard.jsx';
 import api from '../api/axios.js';
@@ -7,14 +8,18 @@ const Home = () => {
   const [activeCategory, setActiveCategory] = useState('All');
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchParams] = useSearchParams();
+  const searchQuery = searchParams.get('search');
 
   useEffect(() => {
     const fetchVideos = async () => {
       setLoading(true);
       try {
-        const res = await api.get('/videos', {
-          params: { category: activeCategory !== 'All' ? activeCategory : undefined }
-        });
+        const params = {};
+        if (activeCategory !== 'All') params.category = activeCategory;
+        if (searchQuery) params.search = searchQuery;
+        
+        const res = await api.get('/videos', { params });
         setVideos(res.data);
       } catch (err) {
         console.error("Failed to fetch videos", err);
@@ -24,7 +29,7 @@ const Home = () => {
     };
 
     fetchVideos();
-  }, [activeCategory]);
+  }, [activeCategory, searchQuery]);
 
   return (
     <div className="flex flex-col h-full">
