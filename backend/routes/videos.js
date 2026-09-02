@@ -1,5 +1,6 @@
 import express from 'express';
 import Video from '../models/Video.js';
+import Channel from '../models/Channel.js';
 import { verifyToken } from '../middleware/auth.js';
 
 const router = express.Router();
@@ -59,6 +60,12 @@ router.post('/', verifyToken, async (req, res) => {
     });
     
     await newVideo.save();
+    
+    // Link video to the channel
+    if (channelId) {
+      await Channel.findByIdAndUpdate(channelId, { $push: { videos: newVideo._id } });
+    }
+    
     res.status(201).json(newVideo);
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
