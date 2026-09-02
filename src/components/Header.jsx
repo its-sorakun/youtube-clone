@@ -72,7 +72,12 @@ const Header = () => {
 
       <div>
         {user ? (
-          <div className="relative" ref={dropdownRef}>
+          <div className="flex items-center gap-2 md:gap-4 relative" ref={dropdownRef}>
+            <Link to="/channel/my-channel" className="p-2 hover:bg-gray-100 rounded-full text-gray-600" title="Create">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                <path d="M14 13h-3v3H9v-3H6v-2h3V8h2v3h3v2zm3-7H3v12h14v-6.39l4 1.83V8.56l-4 1.83V6m2-2v16H1V4h18z"></path>
+              </svg>
+            </Link>
             <button onClick={() => setShowDropdown(!showDropdown)} className="flex items-center text-blue-600 hover:text-blue-700 bg-blue-50 p-1.5 rounded-full">
               <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
