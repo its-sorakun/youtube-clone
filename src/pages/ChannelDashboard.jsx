@@ -40,7 +40,11 @@ const ChannelDashboard = () => {
     try {
       const res = await api.post('/channels', channelFormData);
       alert("Channel created successfully!");
-      dispatch(updateUser({ ...user, channels: [...(user.channels || []), res.data._id] }));
+      dispatch(updateUser({ 
+        ...user, 
+        channels: [...(user.channels || []), res.data._id],
+        avatar: channelFormData.channelAvatar
+      }));
       navigate(`/channel/${res.data._id}`);
     } catch (err) {
       console.error(err);

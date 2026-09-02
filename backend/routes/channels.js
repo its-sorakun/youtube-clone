@@ -33,8 +33,11 @@ router.post('/', verifyToken, async (req, res) => {
     
     await newChannel.save();
     
-    // Add channel to user's channels array
-    await User.findByIdAndUpdate(req.user.id, { $push: { channels: newChannel._id } });
+    // Add channel to user's channels array and sync avatar
+    await User.findByIdAndUpdate(req.user.id, { 
+      $push: { channels: newChannel._id },
+      $set: { avatar: channelAvatar }
+    });
     
     res.status(201).json(newChannel);
   } catch (error) {
