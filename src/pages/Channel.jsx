@@ -53,9 +53,9 @@ const Channel = () => {
 
       {/* Channel Header */}
       <div className="flex flex-col md:flex-row items-center md:items-start gap-6 mt-6 px-4 md:px-10">
-        {channel.owner?.avatar ? (
+        {channel.channelAvatar ? (
           <img 
-            src={channel.owner.avatar} 
+            src={channel.channelAvatar} 
             alt={channel.channelName} 
             className="w-24 h-24 md:w-32 md:h-32 rounded-full object-cover shrink-0"
           />
