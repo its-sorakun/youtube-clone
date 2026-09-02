@@ -27,9 +27,9 @@ const Comments = ({ comments = [], videoId, setComments }) => {
       {/* Add Comment Input */}
       <div className="flex gap-4 mb-8">
         <img 
-          src="https://picsum.photos/150" 
+          src={user?.avatar || "https://picsum.photos/150"} 
           alt="Current user" 
-          className="w-10 h-10 rounded-full"
+          className="w-10 h-10 rounded-full object-cover"
         />
         <form onSubmit={handleSubmit} className="flex-1">
           <input 
