@@ -53,20 +53,11 @@ const Channel = () => {
 
       {/* Channel Header */}
       <div className="flex flex-col md:flex-row items-center md:items-start gap-6 mt-6 px-4 md:px-10">
-        {channel.channelAvatar ? (
-          <img 
-            src={channel.channelAvatar} 
-            alt={channel.channelName} 
-            className="w-24 h-24 md:w-32 md:h-32 rounded-full object-cover shrink-0"
-          />
-        ) : (
-          <div className="w-24 h-24 md:w-32 md:h-32 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
-            <svg viewBox="0 0 24 24" width="50%" height="50%" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-              <circle cx="12" cy="7" r="4"></circle>
-            </svg>
-          </div>
-        )}
+        <img 
+          src={channel.channelAvatar || channel.owner?.avatar || `https://picsum.photos/seed/${channel._id}/150/150`} 
+          alt={channel.channelName} 
+          className="w-24 h-24 md:w-32 md:h-32 rounded-full object-cover shrink-0"
+        />
         <div className="flex flex-col items-center md:items-start flex-1 text-center md:text-left mt-2">
           <h1 className="text-3xl font-bold text-gray-900">{channel.channelName}</h1>
           <div className="text-gray-600 mt-1 mb-2">
