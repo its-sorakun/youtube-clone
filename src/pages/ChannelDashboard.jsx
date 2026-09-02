@@ -15,7 +15,8 @@ const ChannelDashboard = () => {
   const [channelFormData, setChannelFormData] = useState({
     channelName: '',
     description: '',
-    channelBanner: ''
+    channelBanner: '',
+    channelAvatar: ''
   });
 
   const [videoFormData, setVideoFormData] = useState({
@@ -138,6 +139,10 @@ const ChannelDashboard = () => {
           <div className="flex flex-col gap-2">
             <label className="font-semibold text-gray-800">Description</label>
             <textarea name="description" value={channelFormData.description} onChange={handleChannelChange} className="border border-gray-300 rounded-lg p-3 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 h-32 resize-none" />
+          </div>
+          <div className="flex flex-col gap-2">
+            <label className="font-semibold text-gray-800">Channel Display Picture (URL)</label>
+            <input type="url" name="channelAvatar" value={channelFormData.channelAvatar} onChange={handleChannelChange} required className="border border-gray-300 rounded-lg p-3 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500" placeholder="https://picsum.photos/150" />
           </div>
           <div className="flex flex-col gap-2">
             <label className="font-semibold text-gray-800">Banner Image URL</label>

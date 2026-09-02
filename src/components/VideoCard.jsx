@@ -12,9 +12,9 @@ const VideoCard = ({ video }) => {
         />
       </Link>
       <div className="flex mt-3 gap-3">
-        <Link to={`/channel/${video.channelId || 'unknown'}`}>
+        <Link to={`/channel/${video.channelId?._id || video.channelId || 'unknown'}`}>
           <img 
-            src={video.uploader?.avatar || 'https://picsum.photos/150'} 
+            src={video.channelId?.channelAvatar || video.channelAvatar || video.uploader?.avatar || `https://picsum.photos/seed/${video.channelId?._id || video.channelId || video.uploader?._id || video._id}/150/150`} 
             alt="channel avatar" 
             className="w-9 h-9 rounded-full object-cover flex-shrink-0"
           />
@@ -25,8 +25,8 @@ const VideoCard = ({ video }) => {
               {video.title}
             </h3>
           </Link>
-          <Link to={`/channel/${video.channelId || 'unknown'}`} className="text-sm text-gray-600 mt-1 hover:text-gray-900">
-            {video.uploader?.username || video.channelName || 'Unknown Channel'}
+          <Link to={`/channel/${video.channelId?._id || video.channelId || 'unknown'}`} className="text-sm text-gray-600 mt-1 hover:text-gray-900">
+            {video.channelId?.channelName || video.channelName || video.uploader?.username || 'Unknown Channel'}
           </Link>
           <div className="text-sm text-gray-600">
             {video.views} views • {new Date(video.uploadDate || video.createdAt).toLocaleDateString()}

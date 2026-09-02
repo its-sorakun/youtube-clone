@@ -8,6 +8,10 @@ const channelSchema = new mongoose.Schema({
   description: {
     type: String
   },
+  channelAvatar: {
+    type: String,
+    required: true
+  },
   channelBanner: {
     type: String,
     default: () => `https://picsum.photos/seed/${new mongoose.Types.ObjectId()}/800/200`

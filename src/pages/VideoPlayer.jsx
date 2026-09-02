@@ -98,7 +98,7 @@ const VideoPlayer = () => {
           <div className="flex items-center gap-3">
             <Link to={`/channel/${video.channelId?._id || 'unknown'}`}>
               <img 
-                src={video.uploader?.avatar || 'https://picsum.photos/150'} 
+                src={video.channelId?.channelAvatar || video.uploader?.avatar || `https://picsum.photos/seed/${video.channelId?._id || video.channelId || video.uploader?._id || video._id}/150/150`} 
                 alt="Channel Avatar" 
                 className="w-10 h-10 rounded-full object-cover"
               />

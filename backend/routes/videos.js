@@ -19,7 +19,10 @@ router.get('/', async (req, res) => {
       query.category = category;
     }
 
-    const videos = await Video.find(query).populate('uploader', 'username avatar').sort({ createdAt: -1 });
+    const videos = await Video.find(query)
+      .populate('uploader', 'username avatar')
+      .populate('channelId', 'channelName channelAvatar')
+      .sort({ createdAt: -1 });
     res.json(videos);
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
@@ -31,7 +34,7 @@ router.get('/:id', async (req, res) => {
   try {
     const video = await Video.findById(req.params.id)
       .populate('uploader', 'username avatar')
-      .populate('channelId', 'channelName subscribers');
+      .populate('channelId', 'channelName subscribers channelAvatar');
     if (!video) return res.status(404).json({ message: 'Video not found' });
     
     // Increment views (simple implementation)

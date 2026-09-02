@@ -21,12 +21,13 @@ router.get('/:id', async (req, res) => {
 // Create a new channel (requires auth)
 router.post('/', verifyToken, async (req, res) => {
   try {
-    const { channelName, description, channelBanner } = req.body;
+    const { channelName, description, channelBanner, channelAvatar } = req.body;
     
     const newChannel = new Channel({
       channelName,
       description,
       channelBanner,
+      channelAvatar,
       owner: req.user.id
     });
     
