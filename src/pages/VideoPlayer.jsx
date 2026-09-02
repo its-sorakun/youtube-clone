@@ -37,7 +37,7 @@ const VideoPlayer = () => {
     };
 
     fetchVideoData();
-  }, [id, setIsExpanded]);
+  }, [id, dispatch]);
 
   if (loading) {
     return (

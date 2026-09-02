@@ -1,10 +1,10 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import api from '../api/axios.js';
-import { AuthContext } from '../context/AuthContext.jsx';
 
 const Comments = ({ comments = [], videoId, setComments }) => {
   const [newComment, setNewComment] = useState('');
-  const { user } = useContext(AuthContext);
+  const user = useSelector((state) => state.auth.user);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
