@@ -1,14 +1,21 @@
-import { StrictMode } from 'react';
+import React, { StrictMode, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import App from './App.jsx';
-import Home from './pages/Home.jsx';
-import VideoPlayer from './pages/VideoPlayer.jsx';
-import Channel from './pages/Channel.jsx';
-import ChannelDashboard from './pages/ChannelDashboard.jsx';
-import Login from './pages/Login.jsx';
-import Register from './pages/Register.jsx';
 import './index.css';
+
+const Home = React.lazy(() => import('./pages/Home.jsx'));
+const VideoPlayer = React.lazy(() => import('./pages/VideoPlayer.jsx'));
+const Channel = React.lazy(() => import('./pages/Channel.jsx'));
+const ChannelDashboard = React.lazy(() => import('./pages/ChannelDashboard.jsx'));
+const Login = React.lazy(() => import('./pages/Login.jsx'));
+const Register = React.lazy(() => import('./pages/Register.jsx'));
+
+const LoadingFallback = () => (
+  <div className="flex justify-center items-center h-screen w-full">
+    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black"></div>
+  </div>
+);
 
 const router = createBrowserRouter([
   {
@@ -17,34 +24,39 @@ const router = createBrowserRouter([
     children: [
       {
         path: '/',
-        element: <Home />
+        element: <Suspense fallback={<LoadingFallback />}><Home /></Suspense>
       },
       {
         path: '/video/:id',
-        element: <VideoPlayer />
+        element: <Suspense fallback={<LoadingFallback />}><VideoPlayer /></Suspense>
       },
       {
         path: '/channel/my-channel',
-        element: <ChannelDashboard />
+        element: <Suspense fallback={<LoadingFallback />}><ChannelDashboard /></Suspense>
       },
       {
         path: '/channel/:id',
-        element: <Channel />
+        element: <Suspense fallback={<LoadingFallback />}><Channel /></Suspense>
       },
       {
         path: '/login',
-        element: <Login />
+        element: <Suspense fallback={<LoadingFallback />}><Login /></Suspense>
       },
       {
         path: '/register',
-        element: <Register />
+        element: <Suspense fallback={<LoadingFallback />}><Register /></Suspense>
       }
     ]
   }
 ]);
 
+import { Provider } from 'react-redux';
+import store from './store/store.js';
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>
   </StrictMode>,
 );
