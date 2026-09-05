@@ -45,4 +45,43 @@ router.post('/', verifyToken, async (req, res) => {
   }
 });
 
+// Toggle subscribe to a channel
+router.put('/:id/subscribe', verifyToken, async (req, res) => {
+  try {
+    const userId = req.user.id || req.user._id;
+    const channel = await Channel.findById(req.params.id);
+    const user = await User.findById(userId);
+
+    if (!channel || !user) {
+      return res.status(404).json({ message: 'Channel or User not found' });
+    }
+
+    // Check if channel is already in user's subscriptions
+    const isSubscribed = user.subscriptions && user.subscriptions.some(id => id.toString() === channel._id.toString());
+
+    if (isSubscribed) {
+      // Unsubscribe
+      await User.findByIdAndUpdate(user._id, { $pull: { subscriptions: channel._id } });
+      await Channel.findByIdAndUpdate(channel._id, { $inc: { subscribers: -1 } });
+    } else {
+      // Subscribe
+      await User.findByIdAndUpdate(user._id, { $push: { subscriptions: channel._id } });
+      await Channel.findByIdAndUpdate(channel._id, { $inc: { subscribers: 1 } });
+    }
+
+    // Return the updated channel subscriber count and user subscriptions array
+    const updatedUser = await User.findById(user._id);
+    const updatedChannel = await Channel.findById(channel._id);
+
+    res.json({
+      subscriptions: updatedUser.subscriptions,
+      subscribers: updatedChannel.subscribers
+    });
+  } catch (error) {
+    console.error("Subscribe route error:", error);
+    import('fs').then(fs => fs.appendFileSync('debug.log', error.stack + '\n'));
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
+
 export default router;
