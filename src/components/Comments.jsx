@@ -9,6 +9,7 @@ const Comments = ({ comments = [], videoId, setComments }) => {
   const [replyingToCommentId, setReplyingToCommentId] = useState(null);
   const [replyText, setReplyText] = useState('');
   const user = useSelector((state) => state.auth.user);
+  const currentUserId = user?.id || user?._id;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -68,6 +69,26 @@ const Comments = ({ comments = [], videoId, setComments }) => {
     } catch (err) {
       console.error(err);
       alert("Failed to delete comment");
+    }
+  };
+
+  const handleLike = async (commentId) => {
+    if (!user) return alert("Please log in to like comments");
+    try {
+      const res = await api.put(`/comments/${commentId}/like`);
+      setComments(prev => prev.map(c => c._id === commentId ? res.data : c));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleDislike = async (commentId) => {
+    if (!user) return alert("Please log in to dislike comments");
+    try {
+      const res = await api.put(`/comments/${commentId}/dislike`);
+      setComments(prev => prev.map(c => c._id === commentId ? res.data : c));
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -147,11 +168,12 @@ const Comments = ({ comments = [], videoId, setComments }) => {
               
               {!editingCommentId && (
                 <div className="flex items-center gap-4 mt-2">
-                  <button className="flex items-center gap-1 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"></path></svg>
+                  <button onClick={() => handleLike(comment._id)} className={`flex items-center gap-1 hover:text-black dark:hover:text-white ${comment.likes?.includes(currentUserId) ? 'text-black dark:text-white' : 'text-gray-600 dark:text-gray-400'}`}>
+                    <svg className="w-4 h-4" fill={comment.likes?.includes(currentUserId) ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"></path></svg>
+                    {comment.likes?.length > 0 && <span className="text-xs">{comment.likes.length}</span>}
                   </button>
-                  <button className="flex items-center gap-1 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018a2 2 0 01.485.06l3.76.94m-7 10v5a2 2 0 002 2h.096c.5 0 .905-.405.905-.904 0-.715.211-1.413.608-2.008L17 13V4m-7 10h2m5-10h2a2 2 0 012 2v6a2 2 0 01-2 2h-2.5"></path></svg>
+                  <button onClick={() => handleDislike(comment._id)} className={`flex items-center gap-1 hover:text-black dark:hover:text-white ${comment.dislikes?.includes(currentUserId) ? 'text-black dark:text-white' : 'text-gray-600 dark:text-gray-400'}`}>
+                    <svg className="w-4 h-4" fill={comment.dislikes?.includes(currentUserId) ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018a2 2 0 01.485.06l3.76.94m-7 10v5a2 2 0 002 2h.096c.5 0 .905-.405.905-.904 0-.715.211-1.413.608-2.008L17 13V4m-7 10h2m5-10h2a2 2 0 012 2v6a2 2 0 01-2 2h-2.5"></path></svg>
                   </button>
                   <button 
                     onClick={() => {
@@ -229,11 +251,12 @@ const Comments = ({ comments = [], videoId, setComments }) => {
                         
                         {!editingCommentId && (
                           <div className="flex items-center gap-4 mt-2">
-                            <button className="flex items-center gap-1 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white">
-                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"></path></svg>
+                            <button onClick={() => handleLike(reply._id)} className={`flex items-center gap-1 hover:text-black dark:hover:text-white ${reply.likes?.includes(currentUserId) ? 'text-black dark:text-white' : 'text-gray-600 dark:text-gray-400'}`}>
+                              <svg className="w-4 h-4" fill={reply.likes?.includes(currentUserId) ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"></path></svg>
+                              {reply.likes?.length > 0 && <span className="text-xs">{reply.likes.length}</span>}
                             </button>
-                            <button className="flex items-center gap-1 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white">
-                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018a2 2 0 01.485.06l3.76.94m-7 10v5a2 2 0 002 2h.096c.5 0 .905-.405.905-.904 0-.715.211-1.413.608-2.008L17 13V4m-7 10h2m5-10h2a2 2 0 012 2v6a2 2 0 01-2 2h-2.5"></path></svg>
+                            <button onClick={() => handleDislike(reply._id)} className={`flex items-center gap-1 hover:text-black dark:hover:text-white ${reply.dislikes?.includes(currentUserId) ? 'text-black dark:text-white' : 'text-gray-600 dark:text-gray-400'}`}>
+                              <svg className="w-4 h-4" fill={reply.dislikes?.includes(currentUserId) ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018a2 2 0 01.485.06l3.76.94m-7 10v5a2 2 0 002 2h.096c.5 0 .905-.405.905-.904 0-.715.211-1.413.608-2.008L17 13V4m-7 10h2m5-10h2a2 2 0 012 2v6a2 2 0 01-2 2h-2.5"></path></svg>
                             </button>
                             {/* We omit Reply button on replies since we are restricting to 1 level deep */}
                             {user && (user.id === reply.userId?._id || user._id === reply.userId?._id) && (
