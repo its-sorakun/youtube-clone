@@ -13,6 +13,7 @@ dist-ssr
 *.local
 generate_commits.ps1
 Capstone Project FSD_ Develop a YouTube Clone Using the MERN Stack (2).pdf
+.env
 
 # Editor directories and files
 .vscode/*
