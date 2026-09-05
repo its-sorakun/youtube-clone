@@ -89,7 +89,7 @@ const Channel = () => {
   return (
     <div className="flex flex-col w-full max-w-7xl mx-auto pb-10">
       {/* Banner */}
-      <div className="w-full h-32 md:h-56 overflow-hidden rounded-xl bg-gray-200">
+      <div className="w-full h-32 md:h-56 overflow-hidden rounded-xl bg-gray-200 dark:bg-[#272727]">
         {channel.channelBanner && (
           <img 
             src={channel.channelBanner} 
@@ -107,19 +107,19 @@ const Channel = () => {
           className="w-24 h-24 md:w-32 md:h-32 rounded-full object-cover shrink-0"
         />
         <div className="flex flex-col items-center md:items-start flex-1 text-center md:text-left mt-2">
-          <h1 className="text-3xl font-bold text-gray-900">{channel.channelName}</h1>
-          <div className="text-gray-600 mt-1 mb-2">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{channel.channelName}</h1>
+          <div className="text-gray-600 dark:text-gray-400 mt-1 mb-2">
             <span className="font-medium">@{channel.channelName.replace(/\s+/g, '')}</span>
             <span className="mx-2">•</span>
             <span>{channel.subscribers.toLocaleString()} subscribers</span>
             <span className="mx-2">•</span>
             <span>{channelVideos.length} videos</span>
           </div>
-          <p className="text-sm text-gray-700 max-w-2xl line-clamp-2">{channel.description}</p>
+          <p className="text-sm text-gray-700 dark:text-gray-300 max-w-2xl line-clamp-2">{channel.description}</p>
         </div>
         <div className="mt-4 md:mt-6">
           {user && user.channels?.includes(channel._id) ? (
-            <button className="bg-gray-200 text-gray-800 px-5 py-2.5 rounded-full font-medium cursor-default">
+            <button className="bg-gray-200 dark:bg-[#3f3f3f] text-gray-800 dark:text-white px-5 py-2.5 rounded-full font-medium cursor-default">
               Your Channel
             </button>
           ) : (
@@ -127,7 +127,7 @@ const Channel = () => {
               {isSubscribed ? (
                 <button 
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-full font-medium transition-colors bg-gray-100 text-gray-800 hover:bg-gray-200"
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-full font-medium transition-colors bg-gray-100 dark:bg-[#272727] text-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-[#3f3f3f]"
                 >
                   <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
                     <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"></path>
@@ -140,7 +140,7 @@ const Channel = () => {
               ) : (
                 <button 
                   onClick={handleSubscribe}
-                  className="px-5 py-2.5 rounded-full font-medium transition-colors bg-black text-white hover:bg-gray-800"
+                  className="px-5 py-2.5 rounded-full font-medium transition-colors bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200"
                 >
                   Subscribe
                 </button>
@@ -148,10 +148,10 @@ const Channel = () => {
               
               {/* Dropdown Menu */}
               {isDropdownOpen && isSubscribed && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden z-50 py-2">
+                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-[#282828] rounded-xl shadow-lg border border-gray-200 dark:border-transparent overflow-hidden z-50 py-2">
                   <button 
                     onClick={handleSubscribe}
-                    className="w-full text-left px-4 py-3 hover:bg-gray-100 flex items-center gap-3 text-sm text-gray-900"
+                    className="w-full text-left px-4 py-3 hover:bg-gray-100 dark:hover:bg-[#3f3f3f] flex items-center gap-3 text-sm text-gray-900 dark:text-white"
                   >
                     <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
                       <path d="M19 13H5v-2h14v2z"></path>
@@ -166,16 +166,16 @@ const Channel = () => {
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-gray-200 mt-8 px-4 md:px-10">
+      <div className="flex border-b border-gray-200 dark:border-[#303030] mt-8 px-4 md:px-10">
         <button 
           onClick={() => setActiveTab('Home')}
-          className={`px-6 py-3 font-medium ${activeTab === 'Home' ? 'text-black border-b-2 border-black' : 'text-gray-600 hover:text-gray-900'}`}
+          className={`px-6 py-3 font-medium ${activeTab === 'Home' ? 'text-black dark:text-white border-b-2 border-black dark:border-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'}`}
         >
           Home
         </button>
         <button 
           onClick={() => setActiveTab('Videos')}
-          className={`px-6 py-3 font-medium ${activeTab === 'Videos' ? 'text-black border-b-2 border-black' : 'text-gray-600 hover:text-gray-900'}`}
+          className={`px-6 py-3 font-medium ${activeTab === 'Videos' ? 'text-black dark:text-white border-b-2 border-black dark:border-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'}`}
         >
           Videos
         </button>
@@ -198,7 +198,7 @@ const Channel = () => {
             ))}
           </div>
         ) : (
-          <p className="text-gray-500 mt-10">This channel has no videos.</p>
+          <p className="text-gray-500 dark:text-gray-400 mt-10">This channel has no videos.</p>
         )}
       </div>
     </div>

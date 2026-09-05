@@ -3,9 +3,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { logoutUser } from '../store/authSlice';
 import { toggleSidebar } from '../store/sidebarSlice';
+import { toggleTheme } from '../store/themeSlice';
 
 const Header = () => {
   const user = useSelector((state) => state.auth.user);
+  const theme = useSelector((state) => state.theme.mode);
   const dispatch = useDispatch();
   const [showDropdown, setShowDropdown] = useState(false);
   const navigate = useNavigate();
@@ -31,16 +33,16 @@ const Header = () => {
   }, []);
 
   return (
-    <header className="flex justify-between items-center px-4 h-16 bg-white sticky top-0 z-50">
+    <header className="flex justify-between items-center px-4 h-16 bg-white dark:bg-[#0f0f0f] sticky top-0 z-50 transition-colors duration-200">
       <div className="flex items-center gap-4">
-        <button onClick={() => dispatch(toggleSidebar())} className="p-2 hover:bg-gray-100 rounded-full">
+        <button onClick={() => dispatch(toggleSidebar())} className="p-2 hover:bg-gray-100 dark:hover:bg-[#272727] rounded-full text-gray-900 dark:text-white">
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
         </button>
         <Link to="/" className="flex items-center gap-1">
-          <div style={{ width: '93px', height: '20px', display: 'block', fill: 'currentcolor' }}>
+          <div style={{ width: '93px', height: '20px', display: 'block', fill: 'currentcolor' }} className="text-black dark:text-white">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 93 20" focusable="false" aria-hidden="true" style={{ pointerEvents: 'none', display: 'inherit', width: '100%', height: '100%' }}>
               <g>
-                <path d="M14.4848 20C14.4848 20 23.5695 20 25.8229 19.4C27.0917 19.06 28.0459 18.08 28.3808 16.87C29 14.65 29 9.98 29 9.98C29 9.98 29 5.34 28.3808 3.14C28.0459 1.9 27.0917 0.94 25.8229 0.61C23.5695 0 14.4848 0 14.4848 0C14.4848 0 5.42037 0 3.17711 0.61C1.9286 0.94 0.954148 1.9 0.59888 3.14C0 5.34 0 9.98 0 9.98C0 9.98 0 14.65 0.59888 16.87C0.954148 18.08 1.9286 19.06 3.17711 19.4C5.42037 20 14.4848 20 14.4848 20Z" fill="#FF0033"></path>
+                <path d="M14.4848 20C14.4848 20 23.5695 20 25.8229 19.4C27.0917 19.06 28.0459 18.08 28.3808 16.87C29 14.65 29 9.98 29 9.98C29 9.98 29 5.34 28.3808 3.14C28.0459 1.9 27.0917 0.94 25.8229 0.61C23.5695 0 14.4848 0 14.4848 0C14.4848 0 5.42037 0 3.17711 0.61C1.9286 0.94 0.954148 1.9 0.59888 3.14C0 5.34 0 9.98 0 9.98C0 9.98 0 14.65 0.59888 16.87C0.954148 18.08 1.9286 19.06 3.17711 19.4C5.42037 20 14.4848 20 14.4848 20Z" fill="#FF0000"></path>
                 <path d="M19 10L11.5 5.75V14.25L19 10Z" fill="white"></path>
               </g>
               <g>
@@ -64,15 +66,15 @@ const Header = () => {
           navigate(`/?search=${encodeURIComponent(searchInput.trim())}`);
         }
       }} className="flex flex-1 max-w-2xl px-12">
-        <div className="flex w-full items-center border rounded-full overflow-hidden bg-white focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500">
+        <div className="flex w-full items-center border dark:border-[#303030] rounded-full overflow-hidden bg-white dark:bg-[#121212] focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500">
           <input
             type="text"
             name="search"
             placeholder="Search"
-            className="w-full px-4 py-2 outline-none"
+            className="w-full px-4 py-2 outline-none bg-transparent dark:text-white"
           />
-          <button type="submit" className="px-5 py-2 bg-gray-100 hover:bg-gray-200 border-l">
-            <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          <button type="submit" className="px-5 py-2 bg-gray-100 dark:bg-[#222222] hover:bg-gray-200 dark:hover:bg-[#303030] border-l dark:border-[#303030]">
+            <svg className="w-5 h-5 text-gray-600 dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
           </button>
         </div>
       </form>
@@ -80,12 +82,12 @@ const Header = () => {
       <div>
         {user ? (
           <div className="flex items-center gap-2 md:gap-4 relative" ref={dropdownRef}>
-            <Link to="/channel/my-channel" className="p-2 hover:bg-gray-100 rounded-full text-gray-600" title="Create">
+            <Link to="/channel/my-channel" className="p-2 hover:bg-gray-100 dark:hover:bg-[#272727] rounded-full text-gray-600 dark:text-white" title="Create">
               <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
                 <path d="M14 13h-3v3H9v-3H6v-2h3V8h2v3h3v2zm3-7H3v12h14v-6.39l4 1.83V8.56l-4 1.83V6m2-2v16H1V4h18z"></path>
               </svg>
             </Link>
-            <button onClick={() => setShowDropdown(!showDropdown)} className="flex items-center text-blue-600 hover:text-blue-700 bg-blue-50 p-1.5 rounded-full">
+            <button onClick={() => setShowDropdown(!showDropdown)} className="flex items-center text-blue-600 hover:text-blue-700 bg-blue-50 dark:bg-transparent dark:text-white p-1.5 rounded-full">
               <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                 <circle cx="12" cy="7" r="4"></circle>
@@ -93,13 +95,23 @@ const Header = () => {
             </button>
 
             {showDropdown && (
-              <div className="absolute top-full right-0 mt-2 w-64 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-50">
-                <div className="px-5 py-4 border-b border-gray-100 flex flex-col">
-                  <span className="text-base font-medium text-gray-900">{user.username}</span>
-                  <span className="text-sm text-gray-500">@{user.username}</span>
+              <div className="absolute top-full right-0 mt-2 w-64 bg-white dark:bg-[#282828] rounded-xl shadow-lg border border-gray-200 dark:border-transparent py-2 z-50">
+                <div className="px-5 py-4 border-b border-gray-100 dark:border-[#3f3f3f] flex flex-col">
+                  <span className="text-base font-medium text-gray-900 dark:text-white">{user.username}</span>
+                  <span className="text-sm text-gray-500 dark:text-gray-400">@{user.username}</span>
                 </div>
                 <div className="py-2">
-                  <button onClick={handleLogout} className="w-full px-5 py-2 text-left hover:bg-gray-100 flex items-center gap-4 text-sm text-gray-900">
+                  <button onClick={() => dispatch(toggleTheme())} className="w-full px-5 py-2 text-left hover:bg-gray-100 dark:hover:bg-[#3f3f3f] flex items-center gap-4 text-sm text-gray-900 dark:text-white">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                      {theme === 'dark' ? (
+                        <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+                      ) : (
+                        <circle cx="12" cy="12" r="5"></circle>
+                      )}
+                    </svg>
+                    Appearance: {theme === 'dark' ? 'Dark' : 'Light'}
+                  </button>
+                  <button onClick={handleLogout} className="w-full px-5 py-2 text-left hover:bg-gray-100 dark:hover:bg-[#3f3f3f] flex items-center gap-4 text-sm text-gray-900 dark:text-white">
                     <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
                       <polyline points="16 17 21 12 16 7"></polyline>
@@ -112,7 +124,7 @@ const Header = () => {
             )}
           </div>
         ) : (
-          <Link to="/login" className="flex items-center gap-2 border border-gray-300 text-blue-600 px-4 py-1.5 rounded-full hover:bg-blue-50 font-medium">
+          <Link to="/login" className="flex items-center gap-2 border border-gray-300 dark:border-[#3f3f3f] text-blue-600 dark:text-blue-400 px-4 py-1.5 rounded-full hover:bg-blue-50 dark:hover:bg-[#263850] font-medium">
             <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
               <circle cx="12" cy="7" r="4"></circle>

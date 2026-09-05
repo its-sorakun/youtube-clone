@@ -22,7 +22,7 @@ const Comments = ({ comments = [], videoId, setComments }) => {
 
   return (
     <div>
-      <h3 className="text-lg font-bold mb-4">{comments.length} Comments</h3>
+      <h3 className="text-lg font-bold mb-4 dark:text-white">{comments.length} Comments</h3>
       
       {/* Add Comment Input */}
       <div className="flex gap-4 mb-8">
@@ -33,7 +33,7 @@ const Comments = ({ comments = [], videoId, setComments }) => {
             className="w-10 h-10 rounded-full object-cover"
           />
         ) : (
-          <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden flex-shrink-0">
+          <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-[#272727] flex items-center justify-center overflow-hidden flex-shrink-0">
             <svg className="w-7 h-7 text-gray-400 mt-2" fill="currentColor" viewBox="0 0 24 24">
               <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
             </svg>
@@ -45,20 +45,20 @@ const Comments = ({ comments = [], videoId, setComments }) => {
             placeholder="Add a comment..."
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
-            className="w-full border-b border-gray-300 focus:border-black outline-none py-1 bg-transparent transition-colors"
+            className="w-full border-b border-gray-300 dark:border-[#3f3f3f] focus:border-black dark:focus:border-white outline-none py-1 bg-transparent dark:text-white transition-colors"
           />
           <div className="flex justify-end mt-2">
             <button 
               type="button"
               onClick={() => setNewComment('')}
-              className="px-4 py-2 text-sm font-medium hover:bg-gray-100 rounded-full mr-2"
+              className="px-4 py-2 text-sm font-medium hover:bg-gray-100 dark:hover:bg-[#272727] dark:text-white rounded-full mr-2"
             >
               Cancel
             </button>
             <button 
               type="submit"
               disabled={!newComment.trim()}
-              className="px-4 py-2 text-sm font-medium bg-blue-600 text-white rounded-full disabled:bg-gray-100 disabled:text-gray-400"
+              className="px-4 py-2 text-sm font-medium bg-blue-600 text-white rounded-full disabled:bg-gray-100 disabled:dark:bg-[#272727] disabled:text-gray-400 disabled:dark:text-gray-600"
             >
               Comment
             </button>
@@ -77,21 +77,21 @@ const Comments = ({ comments = [], videoId, setComments }) => {
             />
             <div>
               <div className="flex items-baseline gap-2 mb-1">
-                <span className="font-medium text-[13px]">@{comment.userId?.username || 'unknown'}</span>
-                <span className="text-xs text-gray-500">
+                <span className="font-medium text-[13px] dark:text-white">@{comment.userId?.username || 'unknown'}</span>
+                <span className="text-xs text-gray-500 dark:text-gray-400">
                   {new Date(comment.createdAt || comment.timestamp).toLocaleDateString()}
                 </span>
               </div>
-              <p className="text-sm text-gray-900">{comment.text}</p>
+              <p className="text-sm text-gray-900 dark:text-white">{comment.text}</p>
               
               <div className="flex items-center gap-4 mt-2">
-                <button className="flex items-center gap-1 text-gray-600 hover:text-black">
+                <button className="flex items-center gap-1 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"></path></svg>
                 </button>
-                <button className="flex items-center gap-1 text-gray-600 hover:text-black">
+                <button className="flex items-center gap-1 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018a2 2 0 01.485.06l3.76.94m-7 10v5a2 2 0 002 2h.096c.5 0 .905-.405.905-.904 0-.715.211-1.413.608-2.008L17 13V4m-7 10h2m5-10h2a2 2 0 012 2v6a2 2 0 01-2 2h-2.5"></path></svg>
                 </button>
-                <button className="text-xs font-medium text-gray-600 hover:text-black hover:bg-gray-100 px-3 py-1.5 rounded-full">
+                <button className="text-xs font-medium text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-100 dark:hover:bg-[#272727] px-3 py-1.5 rounded-full">
                   Reply
                 </button>
               </div>

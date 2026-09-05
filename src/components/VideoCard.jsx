@@ -21,14 +21,14 @@ const VideoCard = ({ video }) => {
         </Link>
         <div className="flex flex-col">
           <Link to={`/video/${video.videoId || video._id}`}>
-            <h3 className="font-semibold text-gray-900 line-clamp-2 leading-tight">
+            <h3 className="font-semibold text-gray-900 dark:text-white line-clamp-2 leading-tight">
               {video.title}
             </h3>
           </Link>
-          <Link to={`/channel/${video.channelId?._id || video.channelId || 'unknown'}`} className="text-sm text-gray-600 mt-1 hover:text-gray-900">
+          <Link to={`/channel/${video.channelId?._id || video.channelId || 'unknown'}`} className="text-sm text-gray-600 dark:text-gray-400 mt-1 hover:text-gray-900 dark:hover:text-white">
             {video.channelId?.channelName || video.channelName || video.uploader?.username || 'Unknown Channel'}
           </Link>
-          <div className="text-sm text-gray-600">
+          <div className="text-sm text-gray-600 dark:text-gray-400">
             {video.views} views • {new Date(video.uploadDate || video.createdAt).toLocaleDateString()}
           </div>
         </div>

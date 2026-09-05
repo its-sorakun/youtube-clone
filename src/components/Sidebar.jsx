@@ -52,7 +52,7 @@ const Sidebar = () => {
   ];
 
   return (
-    <aside className={`hidden md:flex flex-col bg-white border-r fixed h-[calc(100vh-64px)] overflow-y-auto transition-all duration-200 ${isExpanded ? 'w-64 px-3' : 'w-20 px-1 items-center'}`}>
+    <aside className={`hidden md:flex flex-col bg-white dark:bg-[#0f0f0f] border-r dark:border-r-[#303030] fixed h-[calc(100vh-64px)] overflow-y-auto transition-colors duration-200 ${isExpanded ? 'w-64 px-3' : 'w-20 px-1 items-center'}`}>
       <div className="py-2 w-full">
         {navItems.map((item) => {
           // If the user is logged out, don't render the "You" tab
@@ -65,10 +65,10 @@ const Sidebar = () => {
                 href={item.path}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`flex ${isExpanded ? 'flex-row items-center px-3 py-2.5' : 'flex-col items-center justify-center py-4 px-1 gap-1'} rounded-lg transition-colors hover:bg-gray-100 font-normal w-full`}
+                className={`flex ${isExpanded ? 'flex-row items-center px-3 py-2.5' : 'flex-col items-center justify-center py-4 px-1 gap-1'} rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-[#272727] font-normal w-full`}
               >
-                <span className="text-gray-900">{item.icon}</span>
-                <span className={`${isExpanded ? 'ml-5' : 'text-[10px] text-center w-full'} text-gray-900`}>{item.name}</span>
+                <span className="text-gray-900 dark:text-white">{item.icon}</span>
+                <span className={`${isExpanded ? 'ml-5' : 'text-[10px] text-center w-full'} text-gray-900 dark:text-white`}>{item.name}</span>
               </a>
             );
           }
@@ -79,12 +79,12 @@ const Sidebar = () => {
               to={item.path}
               className={({ isActive }) =>
                 `flex ${isExpanded ? 'flex-row items-center px-3 py-2.5' : 'flex-col items-center justify-center py-4 px-1 gap-1'} rounded-lg transition-colors w-full ${
-                  isActive ? 'bg-gray-100 font-medium' : 'hover:bg-gray-100 font-normal'
+                  isActive ? 'bg-gray-100 dark:bg-[#272727] font-medium' : 'hover:bg-gray-100 dark:hover:bg-[#272727] font-normal'
                 }`
               }
             >
-              <span className="text-gray-900">{item.icon}</span>
-              <span className={`${isExpanded ? 'ml-5' : 'text-[10px] text-center w-full'} text-gray-900`}>{item.name}</span>
+              <span className="text-gray-900 dark:text-white">{item.icon}</span>
+              <span className={`${isExpanded ? 'ml-5' : 'text-[10px] text-center w-full'} text-gray-900 dark:text-white`}>{item.name}</span>
             </NavLink>
           );
         })}
@@ -95,21 +95,21 @@ const Sidebar = () => {
 
           {user && subscriptions.length > 0 && (
             <>
-              <hr className="my-2 border-gray-200" />
+              <hr className="my-2 border-gray-200 dark:border-[#303030]" />
               <div className="px-3 py-2">
-                <h3 className="text-sm font-semibold text-gray-900 mb-2">Subscriptions</h3>
+                <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">Subscriptions</h3>
                 {subscriptions.map(sub => (
                   <NavLink 
                     key={sub._id} 
                     to={`/channel/${sub._id}`} 
-                    className="flex items-center px-3 py-2 rounded-lg hover:bg-gray-100 mb-1"
+                    className="flex items-center px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-[#272727] mb-1"
                   >
                     <img 
                       src={sub.channelAvatar || sub.owner?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(sub.channelName)}&background=random`} 
                       alt={sub.channelName} 
                       className="w-6 h-6 rounded-full object-cover"
                     />
-                    <span className="text-gray-900 ml-5 text-sm truncate">{sub.channelName}</span>
+                    <span className="text-gray-900 dark:text-white ml-5 text-sm truncate">{sub.channelName}</span>
                   </NavLink>
                 ))}
               </div>

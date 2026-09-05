@@ -137,7 +137,7 @@ const VideoPlayer = () => {
           })()}
         </div>
         
-        <h1 className="text-xl font-bold mt-4 mb-2 text-gray-900">{video.title}</h1>
+        <h1 className="text-xl font-bold mt-4 mb-2 text-gray-900 dark:text-white">{video.title}</h1>
         
         <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-4">
           {/* Channel Info */}
@@ -151,16 +151,16 @@ const VideoPlayer = () => {
             </Link>
             <div>
               <Link to={`/channel/${video.channelId?._id || 'unknown'}`}>
-                <h3 className="font-semibold text-gray-900 leading-tight hover:text-gray-700">
+                <h3 className="font-semibold text-gray-900 dark:text-white leading-tight hover:text-gray-700 dark:hover:text-gray-300">
                   {video.channelId?.channelName || video.uploader?.username || 'Unknown Channel'}
                 </h3>
               </Link>
-              <p className="text-sm text-gray-600 leading-tight">
+              <p className="text-sm text-gray-600 dark:text-gray-400 leading-tight">
                 {video.channelId?.subscribers?.toLocaleString() || 0} subscribers
               </p>
             </div>
             {user && user.channels?.includes(video.channelId?._id) ? (
-              <button className="bg-gray-200 text-gray-800 px-4 py-2 rounded-full font-medium ml-4 cursor-default">
+              <button className="bg-gray-200 dark:bg-[#3f3f3f] text-gray-800 dark:text-white px-4 py-2 rounded-full font-medium ml-4 cursor-default">
                 Your Channel
               </button>
             ) : (
@@ -168,7 +168,7 @@ const VideoPlayer = () => {
                 {user?.subscriptions?.includes(video.channelId?._id) ? (
                   <button 
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                    className="flex items-center gap-2 px-4 py-2 rounded-full font-medium transition-colors bg-gray-100 text-gray-800 hover:bg-gray-200"
+                    className="flex items-center gap-2 px-4 py-2 rounded-full font-medium transition-colors bg-gray-100 dark:bg-[#272727] text-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-[#3f3f3f]"
                   >
                     <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
                       <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"></path>
@@ -181,7 +181,7 @@ const VideoPlayer = () => {
                 ) : (
                   <button 
                     onClick={handleSubscribe}
-                    className="px-4 py-2 rounded-full font-medium transition-colors bg-black text-white hover:bg-gray-800"
+                    className="px-4 py-2 rounded-full font-medium transition-colors bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200"
                   >
                     Subscribe
                   </button>
@@ -189,10 +189,10 @@ const VideoPlayer = () => {
 
                 {/* Dropdown Menu */}
                 {isDropdownOpen && user?.subscriptions?.includes(video.channelId?._id) && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden z-50 py-2">
+                  <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-[#282828] rounded-xl shadow-lg border border-gray-200 dark:border-transparent overflow-hidden z-50 py-2">
                     <button 
                       onClick={handleSubscribe}
-                      className="w-full text-left px-4 py-3 hover:bg-gray-100 flex items-center gap-3 text-sm text-gray-900"
+                      className="w-full text-left px-4 py-3 hover:bg-gray-100 dark:hover:bg-[#3f3f3f] flex items-center gap-3 text-sm text-gray-900 dark:text-white"
                     >
                       <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
                         <path d="M19 13H5v-2h14v2z"></path>
@@ -207,7 +207,7 @@ const VideoPlayer = () => {
           
           {/* Action Buttons */}
           <div className="flex items-center gap-2">
-            <div className="flex items-center bg-gray-100 rounded-full">
+            <div className="flex items-center bg-gray-100 dark:bg-[#272727] rounded-full">
               <button 
                 onClick={async () => {
                   try {
@@ -217,7 +217,7 @@ const VideoPlayer = () => {
                     alert("Please log in to like this video");
                   }
                 }}
-                className={`flex items-center gap-2 px-4 py-2 hover:bg-gray-200 rounded-l-full border-r border-gray-300 font-medium text-sm ${video.likedBy?.includes(user?.id || user?._id) ? 'text-blue-600 bg-gray-200' : ''}`}
+                className={`flex items-center gap-2 px-4 py-2 hover:bg-gray-200 dark:hover:bg-[#3f3f3f] rounded-l-full border-r border-gray-300 dark:border-[#3f3f3f] font-medium text-sm text-gray-900 dark:text-white ${video.likedBy?.includes(user?.id || user?._id) ? 'dark:bg-[#3f3f3f] bg-gray-200' : ''}`}
               >
                 <svg className="w-5 h-5" fill={video.likedBy?.includes(user?.id || user?._id) ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"></path></svg>
                 {video.likes}
@@ -231,7 +231,7 @@ const VideoPlayer = () => {
                     alert("Please log in to dislike this video");
                   }
                 }}
-                className={`flex items-center gap-2 px-4 py-2 hover:bg-gray-200 rounded-r-full font-medium text-sm ${video.dislikedBy?.includes(user?.id || user?._id) ? 'text-blue-600 bg-gray-200' : ''}`}
+                className={`flex items-center gap-2 px-4 py-2 hover:bg-gray-200 dark:hover:bg-[#3f3f3f] rounded-r-full font-medium text-sm text-gray-900 dark:text-white ${video.dislikedBy?.includes(user?.id || user?._id) ? 'dark:bg-[#3f3f3f] bg-gray-200' : ''}`}
               >
                 <svg className="w-5 h-5" fill={video.dislikedBy?.includes(user?.id || user?._id) ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018a2 2 0 01.485.06l3.76.94m-7 10v5a2 2 0 002 2h.096c.5 0 .905-.405.905-.904 0-.715.211-1.413.608-2.008L17 13V4m-7 10h2m5-10h2a2 2 0 012 2v6a2 2 0 01-2 2h-2.5"></path></svg>
                 {video.dislikes}
@@ -241,11 +241,11 @@ const VideoPlayer = () => {
         </div>
         
         {/* Description Box */}
-        <div className="bg-gray-100 rounded-xl p-4 mt-2">
-          <p className="font-medium text-sm text-gray-900 mb-1">
+        <div className="bg-gray-100 dark:bg-[#272727] rounded-xl p-4 mt-2">
+          <p className="font-medium text-sm text-gray-900 dark:text-white mb-1">
             {video.views.toLocaleString()} views • {new Date(video.createdAt).toLocaleDateString()}
           </p>
-          <p className="text-sm text-gray-800 whitespace-pre-wrap">{video.description}</p>
+          <p className="text-sm text-gray-800 dark:text-gray-200 whitespace-pre-wrap">{video.description}</p>
         </div>
 
         {/* Comments Section */}
@@ -266,11 +266,11 @@ const VideoPlayer = () => {
               />
             </div>
             <div className="flex flex-col">
-              <h4 className="font-medium text-sm text-gray-900 line-clamp-2 leading-tight">
+              <h4 className="font-medium text-sm text-gray-900 dark:text-white line-clamp-2 leading-tight">
                 {relatedVideo.title}
               </h4>
-              <p className="text-xs text-gray-600 mt-1">{relatedVideo.uploader?.username || 'Unknown'}</p>
-              <p className="text-xs text-gray-600">{relatedVideo.views?.toLocaleString() || 0} views</p>
+              <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">{relatedVideo.uploader?.username || 'Unknown'}</p>
+              <p className="text-xs text-gray-600 dark:text-gray-400">{relatedVideo.views?.toLocaleString() || 0} views</p>
             </div>
           </Link>
         ))}
