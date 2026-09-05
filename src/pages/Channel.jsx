@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateUser } from '../store/authSlice';
 import VideoCard from '../components/VideoCard.jsx';
@@ -119,9 +119,11 @@ const Channel = () => {
         </div>
         <div className="mt-4 md:mt-6">
           {user && user.channels?.includes(channel._id) ? (
-            <button className="bg-gray-200 dark:bg-[#3f3f3f] text-gray-800 dark:text-white px-5 py-2.5 rounded-full font-medium cursor-default">
-              Your Channel
-            </button>
+            <Link to="/channel/my-channel">
+              <button className="bg-gray-200 dark:bg-[#3f3f3f] text-gray-800 dark:text-white px-5 py-2.5 rounded-full font-medium hover:bg-gray-300 dark:hover:bg-[#4f4f4f] transition-colors">
+                Manage Videos
+              </button>
+            </Link>
           ) : (
             <div className="relative subscribe-dropdown-container">
               {isSubscribed ? (
