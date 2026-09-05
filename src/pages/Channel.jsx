@@ -7,6 +7,7 @@ const Channel = () => {
   const { id } = useParams();
   const [channel, setChannel] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('Home');
   
   useEffect(() => {
     const fetchChannel = async () => {
@@ -78,9 +79,18 @@ const Channel = () => {
 
       {/* Tabs */}
       <div className="flex border-b border-gray-200 mt-8 px-4 md:px-10">
-        <button className="px-6 py-3 font-medium text-black border-b-2 border-black">Home</button>
-        <button className="px-6 py-3 font-medium text-gray-600 hover:text-gray-900">Videos</button>
-        <button className="px-6 py-3 font-medium text-gray-600 hover:text-gray-900">Playlists</button>
+        <button 
+          onClick={() => setActiveTab('Home')}
+          className={`px-6 py-3 font-medium ${activeTab === 'Home' ? 'text-black border-b-2 border-black' : 'text-gray-600 hover:text-gray-900'}`}
+        >
+          Home
+        </button>
+        <button 
+          onClick={() => setActiveTab('Videos')}
+          className={`px-6 py-3 font-medium ${activeTab === 'Videos' ? 'text-black border-b-2 border-black' : 'text-gray-600 hover:text-gray-900'}`}
+        >
+          Videos
+        </button>
       </div>
 
       {/* Videos Grid */}
