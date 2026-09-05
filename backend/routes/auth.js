@@ -68,7 +68,8 @@ router.post('/login', async (req, res) => {
         username: user.username,
         email: user.email,
         avatar: user.avatar,
-        channels: user.channels || []
+        channels: user.channels || [],
+        subscriptions: user.subscriptions || []
       }
     });
   } catch (error) {

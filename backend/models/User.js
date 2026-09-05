@@ -22,6 +22,10 @@ const userSchema = new mongoose.Schema({
   channels: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Channel'
+  }],
+  subscriptions: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Channel'
   }]
 }, { timestamps: true });
 

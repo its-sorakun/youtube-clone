@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { updateUser } from '../store/authSlice';
 import VideoCard from '../components/VideoCard.jsx';
 import api from '../api/axios.js';
 
 const Channel = () => {
   const { id } = useParams();
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.user);
+  
   const [channel, setChannel] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('Home');
@@ -25,6 +30,31 @@ const Channel = () => {
     fetchChannel();
   }, [id]);
 
+  const handleSubscribe = async () => {
+    if (!user) {
+      alert("Please log in to subscribe");
+      return;
+    }
+    try {
+      const res = await api.put(`/channels/${channel._id}/subscribe`);
+      
+      // Update local channel state
+      setChannel(prev => ({
+        ...prev,
+        subscribers: res.data.subscribers
+      }));
+
+      // Update global user state
+      dispatch(updateUser({
+        ...user,
+        subscriptions: res.data.subscriptions
+      }));
+    } catch (err) {
+      console.error("Failed to subscribe", err);
+      alert("Failed to subscribe: " + (err.response?.data?.error || err.message));
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center py-40">
@@ -38,6 +68,7 @@ const Channel = () => {
   }
 
   const channelVideos = channel.videos || [];
+  const isSubscribed = user?.subscriptions?.includes(channel._id);
 
   return (
     <div className="flex flex-col w-full max-w-7xl mx-auto pb-10">
@@ -71,9 +102,22 @@ const Channel = () => {
           <p className="text-sm text-gray-700 max-w-2xl line-clamp-2">{channel.description}</p>
         </div>
         <div className="mt-4 md:mt-6">
-          <button className="bg-black text-white px-5 py-2.5 rounded-full font-medium hover:bg-gray-800">
-            Subscribe
-          </button>
+          {user && user.channels?.includes(channel._id) ? (
+            <button className="bg-gray-200 text-gray-800 px-5 py-2.5 rounded-full font-medium cursor-default">
+              Your Channel
+            </button>
+          ) : (
+            <button 
+              onClick={handleSubscribe}
+              className={`px-5 py-2.5 rounded-full font-medium transition-colors ${
+                isSubscribed 
+                  ? 'bg-gray-100 text-gray-800 hover:bg-gray-200' 
+                  : 'bg-black text-white hover:bg-gray-800'
+              }`}
+            >
+              {isSubscribed ? 'Subscribed' : 'Subscribe'}
+            </button>
+          )}
         </div>
       </div>
 

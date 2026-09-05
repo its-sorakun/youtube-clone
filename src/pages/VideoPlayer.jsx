@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { setSidebarExpanded } from '../store/sidebarSlice';
+import { updateUser } from '../store/authSlice';
 import Comments from '../components/Comments.jsx';
 import api from '../api/axios.js';
 
@@ -38,6 +39,36 @@ const VideoPlayer = () => {
 
     fetchVideoData();
   }, [id, dispatch]);
+
+  const handleSubscribe = async () => {
+    if (!user) {
+      alert("Please log in to subscribe");
+      return;
+    }
+    if (!video?.channelId?._id) return;
+    
+    try {
+      const res = await api.put(`/channels/${video.channelId._id}/subscribe`);
+      
+      // Update local channel subscriber count temporarily for display
+      setVideo(prev => ({
+        ...prev,
+        channelId: {
+          ...prev.channelId,
+          subscribers: res.data.subscribers
+        }
+      }));
+
+      // Update global user state
+      dispatch(updateUser({
+        ...user,
+        subscriptions: res.data.subscriptions
+      }));
+    } catch (err) {
+      console.error("Failed to subscribe", err);
+      alert("Failed to subscribe: " + (err.response?.data?.error || err.message));
+    }
+  };
 
   if (loading) {
     return (
@@ -113,9 +144,22 @@ const VideoPlayer = () => {
                 {video.channelId?.subscribers?.toLocaleString() || 0} subscribers
               </p>
             </div>
-            <button className="bg-black text-white px-4 py-2 rounded-full font-medium ml-4 hover:bg-gray-800">
-              Subscribe
-            </button>
+            {user && user.channels?.includes(video.channelId?._id) ? (
+              <button className="bg-gray-200 text-gray-800 px-4 py-2 rounded-full font-medium ml-4 cursor-default">
+                Your Channel
+              </button>
+            ) : (
+              <button 
+                onClick={handleSubscribe}
+                className={`px-4 py-2 rounded-full font-medium ml-4 transition-colors ${
+                  user?.subscriptions?.includes(video.channelId?._id) 
+                    ? 'bg-gray-100 text-gray-800 hover:bg-gray-200' 
+                    : 'bg-black text-white hover:bg-gray-800'
+                }`}
+              >
+                {user?.subscriptions?.includes(video.channelId?._id) ? 'Subscribed' : 'Subscribe'}
+              </button>
+            )}
           </div>
           
           {/* Action Buttons */}
