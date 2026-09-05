@@ -10,6 +10,7 @@ const Channel = React.lazy(() => import('./pages/Channel.jsx'));
 const ChannelDashboard = React.lazy(() => import('./pages/ChannelDashboard.jsx'));
 const Login = React.lazy(() => import('./pages/Login.jsx'));
 const Register = React.lazy(() => import('./pages/Register.jsx'));
+const NotFound = React.lazy(() => import('./pages/NotFound.jsx'));
 
 const LoadingFallback = () => (
   <div className="flex justify-center items-center h-screen w-full">
@@ -45,6 +46,10 @@ const router = createBrowserRouter([
       {
         path: '/register',
         element: <Suspense fallback={<LoadingFallback />}><Register /></Suspense>
+      },
+      {
+        path: '*',
+        element: <Suspense fallback={<LoadingFallback />}><NotFound /></Suspense>
       }
     ]
   }
