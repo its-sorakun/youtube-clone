@@ -34,13 +34,15 @@ const Sidebar = () => {
     },
     { 
       name: 'Shorts', 
-      path: '/shorts', 
+      path: 'https://www.youtube.com/shorts', 
+      external: true,
       icon: <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M17.77 10.32c-.77-.32-1.2-.5-1.2-.5L19 9.06c1.3-.71 1.77-2.34 1.05-3.64-.71-1.3-2.34-1.77-3.64-1.05l-8.6 4.74c-1.12.62-1.57 2.02-1 3.14.46.9 1.42 1.39 2.42 1.25l.97-.14s-.93.53-1.17.65c-1.3.71-1.77 2.34-1.05 3.64.71 1.3 2.34 1.77 3.64 1.05l8.6-4.74c1.12-.62 1.57-2.02 1-3.14-.46-.9-1.42-1.39-2.42-1.25l-.97.14s.93-.53 1.17-.65zM10 14.65v-5.3L15 12l-5 2.65z"></path></svg> 
     },
     { 
-      name: 'Subscriptions', 
-      path: '/feed/subscriptions', 
-      icon: <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M10 18v-6l5 3-5 3zm7-15H7v1h10V3zm3 3H4v1h16V6zm2 3H2v12h20V9zM3 10h18v10H3V10z"></path></svg> 
+      name: 'YouTube Music', 
+      path: 'https://music.youtube.com/', 
+      external: true,
+      icon: <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm-2.5-11.5l6 3.5-6 3.5v-7z"></path></svg> 
     },
     { 
       name: 'You', 
@@ -51,23 +53,38 @@ const Sidebar = () => {
 
   return (
     <aside className={`hidden md:flex flex-col bg-white border-r fixed h-[calc(100vh-64px)] overflow-y-auto transition-all duration-200 ${isExpanded ? 'w-64 px-3' : 'w-20 px-1 items-center'}`}>
-      <div className="py-2">
+      <div className="py-2 w-full">
         {navItems.map((item) => {
           // If the user is logged out, don't render the "You" tab
           if (item.name === 'You' && !user) return null;
+          
+          if (item.external) {
+            return (
+              <a
+                key={item.name}
+                href={item.path}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`flex ${isExpanded ? 'flex-row items-center px-3 py-2.5' : 'flex-col items-center justify-center py-4 px-1 gap-1'} rounded-lg transition-colors hover:bg-gray-100 font-normal w-full`}
+              >
+                <span className="text-gray-900">{item.icon}</span>
+                <span className={`${isExpanded ? 'ml-5' : 'text-[10px] text-center w-full'} text-gray-900`}>{item.name}</span>
+              </a>
+            );
+          }
           
           return (
             <NavLink
               key={item.name}
               to={item.path}
               className={({ isActive }) =>
-                `flex ${isExpanded ? 'flex-row items-center px-3 py-2.5' : 'flex-col items-center justify-center py-4 px-1 gap-1'} rounded-lg transition-colors ${
+                `flex ${isExpanded ? 'flex-row items-center px-3 py-2.5' : 'flex-col items-center justify-center py-4 px-1 gap-1'} rounded-lg transition-colors w-full ${
                   isActive ? 'bg-gray-100 font-medium' : 'hover:bg-gray-100 font-normal'
                 }`
               }
             >
               <span className="text-gray-900">{item.icon}</span>
-              <span className={`${isExpanded ? 'ml-5' : 'text-[10px]'} text-gray-900`}>{item.name}</span>
+              <span className={`${isExpanded ? 'ml-5' : 'text-[10px] text-center w-full'} text-gray-900`}>{item.name}</span>
             </NavLink>
           );
         })}
@@ -75,16 +92,6 @@ const Sidebar = () => {
       
       {isExpanded && (
         <>
-          <hr className="my-2 border-gray-200" />
-          <div className="px-3 py-2">
-            <h3 className="text-sm font-semibold text-gray-900 mb-2">Explore</h3>
-            <NavLink to="/gaming" className="flex items-center px-3 py-2 rounded-lg hover:bg-gray-100">
-              <span className="text-gray-900 ml-5 text-sm">Gaming</span>
-            </NavLink>
-            <NavLink to="/sports" className="flex items-center px-3 py-2 rounded-lg hover:bg-gray-100">
-              <span className="text-gray-900 ml-5 text-sm">Sports</span>
-            </NavLink>
-          </div>
 
           {user && subscriptions.length > 0 && (
             <>
