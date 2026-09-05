@@ -87,12 +87,16 @@ const Header = () => {
                 <path d="M14 13h-3v3H9v-3H6v-2h3V8h2v3h3v2zm3-7H3v12h14v-6.39l4 1.83V8.56l-4 1.83V6m2-2v16H1V4h18z"></path>
               </svg>
             </Link>
-            <button onClick={() => setShowDropdown(!showDropdown)} className="flex items-center justify-center rounded-full overflow-hidden w-8 h-8 focus:outline-none focus:ring-2 focus:ring-blue-500">
-              <img 
-                src={user.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.username || 'User')}&background=random`} 
-                alt="Profile" 
-                className="w-full h-full object-cover" 
-              />
+            <button onClick={() => setShowDropdown(!showDropdown)} className="flex items-center justify-center rounded-full overflow-hidden w-8 h-8 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-200 dark:bg-[#272727] text-gray-400">
+              {user.avatar ? (
+                <img 
+                  src={user.avatar} 
+                  alt="Profile" 
+                  className="w-full h-full object-cover" 
+                />
+              ) : (
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"></path></svg>
+              )}
             </button>
 
             {showDropdown && (
