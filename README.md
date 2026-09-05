@@ -40,7 +40,7 @@ Follow these instructions to set up the project locally.
 
 ```bash
 git clone https://github.com/its-sorakun/youtube-clone.git
-cd ytclone
+cd youtube-clone
 ```
 
 ### 2. Backend Setup
