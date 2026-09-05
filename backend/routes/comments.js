@@ -76,4 +76,48 @@ router.delete('/:id', verifyToken, async (req, res) => {
   }
 });
 
+// Like a comment
+router.put('/:id/like', verifyToken, async (req, res) => {
+  try {
+    const comment = await Comment.findById(req.params.id);
+    if (!comment) return res.status(404).json({ message: 'Comment not found' });
+    
+    if (comment.likes.includes(req.user.id)) {
+      comment.likes = comment.likes.filter(id => id.toString() !== req.user.id);
+    } else {
+      comment.likes.push(req.user.id);
+      comment.dislikes = comment.dislikes.filter(id => id.toString() !== req.user.id);
+    }
+    
+    await comment.save();
+    
+    const populatedComment = await Comment.findById(comment._id).populate('userId', 'username avatar');
+    res.json(populatedComment);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Dislike a comment
+router.put('/:id/dislike', verifyToken, async (req, res) => {
+  try {
+    const comment = await Comment.findById(req.params.id);
+    if (!comment) return res.status(404).json({ message: 'Comment not found' });
+    
+    if (comment.dislikes.includes(req.user.id)) {
+      comment.dislikes = comment.dislikes.filter(id => id.toString() !== req.user.id);
+    } else {
+      comment.dislikes.push(req.user.id);
+      comment.likes = comment.likes.filter(id => id.toString() !== req.user.id);
+    }
+    
+    await comment.save();
+
+    const populatedComment = await Comment.findById(comment._id).populate('userId', 'username avatar');
+    res.json(populatedComment);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 export default router;
