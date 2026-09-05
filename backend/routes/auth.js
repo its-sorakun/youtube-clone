@@ -57,7 +57,7 @@ router.post('/login', async (req, res) => {
 
     const token = jwt.sign(
       { id: user._id, username: user.username },
-      process.env.JWT_SECRET || 'fallback_secret_for_dev',
+      process.env.JWT_SECRET,
       { expiresIn: '1d' }
     );
 
