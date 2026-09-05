@@ -102,7 +102,3 @@ ytclone/
 - **Videos:** `GET /api/videos`, `GET /api/videos/:id`, `POST /api/videos`, `PUT /api/videos/:id/like`, `PUT /api/videos/:id/dislike`
 - **Comments:** `GET /api/comments/video/:videoId`, `POST /api/comments`, `PUT /api/comments/:id/like`
 - **Channels:** `GET /api/channels/:id`, `POST /api/channels`
-
-## 📝 License
-
-This project is submitted as an academic/learning assignment. All rights reserved.
