@@ -8,8 +8,7 @@ export const categories = [
   "Live",
   "News",
   "Sports",
-  "Podcasts",
-  "Recently uploaded"
+  "Podcasts"
 ];
 
 export const mockChannels = [
