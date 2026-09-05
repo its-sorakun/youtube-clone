@@ -70,6 +70,37 @@ router.post('/', verifyToken, async (req, res) => {
   }
 });
 
+// Update channel (requires auth)
+router.put('/:id', verifyToken, async (req, res) => {
+  try {
+    const channel = await Channel.findById(req.params.id);
+    if (!channel) return res.status(404).json({ message: 'Channel not found' });
+    
+    if (channel.owner.toString() !== req.user.id) {
+      return res.status(403).json({ message: 'You can only update your own channel' });
+    }
+    
+    const { channelName, description, channelBanner, channelAvatar } = req.body;
+    
+    const updatedChannel = await Channel.findByIdAndUpdate(
+      req.params.id, 
+      { channelName, description, channelBanner, channelAvatar },
+      { new: true }
+    )
+    .populate('owner', 'username avatar')
+    .populate('videos');
+    
+    // Sync the channel avatar to the user's avatar
+    if (channelAvatar) {
+      await User.findByIdAndUpdate(req.user.id, { $set: { avatar: channelAvatar } });
+    }
+    
+    res.json(updatedChannel);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // Toggle subscribe to a channel
 router.put('/:id/subscribe', verifyToken, async (req, res) => {
   try {
