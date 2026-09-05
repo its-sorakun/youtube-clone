@@ -14,9 +14,11 @@ A full-stack video sharing web application built using the MERN (MongoDB, Expres
 
 ## 📸 Screenshots
 
-| Home Page | Channel Dashboard |
-| :---: | :---: |
-| <img src="https://imgh.in/host/bp38ur" width="400" /> | <img src="https://imgh.in/host/dkbvam" width="400" /> |
+### Home Page
+![Home Page](https://imgh.in/host/bp38ur)
+
+### Channel Dashboard
+![Channel Dashboard](https://imgh.in/host/dkbvam)
 
 ## 🛠️ Technology Stack
 
