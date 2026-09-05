@@ -41,8 +41,8 @@ const Home = () => {
             onClick={() => setActiveCategory(category)}
             className={`px-3 py-1.5 rounded-lg whitespace-nowrap text-sm font-medium transition-colors ${
               activeCategory === category 
-                ? 'bg-black text-white' 
-                : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+                ? 'bg-black text-white dark:bg-white dark:text-black' 
+                : 'bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-[#272727] dark:text-white dark:hover:bg-[#3f3f3f]'
             }`}
           >
             {category}
