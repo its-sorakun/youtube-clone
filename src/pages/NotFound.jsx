@@ -30,7 +30,7 @@ const NotFound = () => {
           id="error-page-hh-illustration" 
           src="https://www.gstatic.com/youtube/src/web/htdocs/img/monkey.png" 
           alt="" 
-          style={{ marginBottom: '10px' }}
+          style={{ marginBottom: '10px', display: 'inline-block' }}
         />
         <p style={{ width: '500px', margin: 'auto', color: '#333', fontSize: '16px', textShadow: '0 0 0 transparent, 0 1px 1px #fff' }}>
           This page isn't available. Sorry about that.
