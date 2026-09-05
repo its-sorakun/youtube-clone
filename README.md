@@ -12,6 +12,14 @@ A full-stack video sharing web application built using the MERN (MongoDB, Expres
 - **Channel Dashboard**: Dedicated pages for channels to view their uploaded videos and subscriber counts.
 - **Dark Mode**: Fully responsive dark mode UI implemented with Tailwind CSS.
 
+## 📸 Screenshots
+
+| :---: | :---: |
+| <img src="https://imgh.in/host/bp38ur" width="400" /> |
+
+| :---: | :---: |
+| <img src="https://imgh.in/host/dkbvam" width="400" />
+
 ## 🛠️ Technology Stack
 
 **Frontend:**
