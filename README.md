@@ -15,7 +15,7 @@ A full-stack video sharing web application built using the MERN (MongoDB, Expres
 ## 📸 Screenshots
 
 ### Home Page
-![Home Page](https://imgh.in/host/bp38ur)
+![Home Page](https://imgh.in/host/cdustt)
 
 ### Channel Dashboard
 ![Channel Dashboard](https://imgh.in/host/dkbvam)
