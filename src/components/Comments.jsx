@@ -4,6 +4,8 @@ import api from '../api/axios.js';
 
 const Comments = ({ comments = [], videoId, setComments }) => {
   const [newComment, setNewComment] = useState('');
+  const [editingCommentId, setEditingCommentId] = useState(null);
+  const [editCommentText, setEditCommentText] = useState('');
   const user = useSelector((state) => state.auth.user);
 
   const handleSubmit = async (e) => {
@@ -17,6 +19,34 @@ const Comments = ({ comments = [], videoId, setComments }) => {
     } catch (err) {
       console.error("Failed to post comment", err);
       alert("Failed to post comment. Are you logged in?");
+    }
+  };
+
+  const handleEditSubmit = async (e, commentId) => {
+    e.preventDefault();
+    if (!editCommentText.trim()) return;
+    
+    try {
+      const res = await api.put(`/comments/${commentId}`, { text: editCommentText });
+      // Update the modified comment in the local state list
+      setComments(prev => prev.map(c => c._id === commentId ? res.data : c));
+      setEditingCommentId(null);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to update comment");
+    }
+  };
+
+  const handleDelete = async (commentId) => {
+    // Only delete if the user explicitly confirms it
+    if (!window.confirm("Delete this comment?")) return;
+    
+    try {
+      await api.delete(`/comments/${commentId}`);
+      setComments(prev => prev.filter(c => c._id !== commentId));
+    } catch (err) {
+      console.error(err);
+      alert("Failed to delete comment");
     }
   };
 
@@ -49,13 +79,6 @@ const Comments = ({ comments = [], videoId, setComments }) => {
           />
           <div className="flex justify-end mt-2">
             <button 
-              type="button"
-              onClick={() => setNewComment('')}
-              className="px-4 py-2 text-sm font-medium hover:bg-gray-100 dark:hover:bg-[#272727] dark:text-white rounded-full mr-2"
-            >
-              Cancel
-            </button>
-            <button 
               type="submit"
               disabled={!newComment.trim()}
               className="px-4 py-2 text-sm font-medium bg-blue-600 text-white rounded-full disabled:bg-gray-100 disabled:dark:bg-[#272727] disabled:text-gray-400 disabled:dark:text-gray-600"
@@ -75,26 +98,55 @@ const Comments = ({ comments = [], videoId, setComments }) => {
               alt="User Avatar" 
               className="w-10 h-10 rounded-full object-cover"
             />
-            <div>
+            <div className="flex-1">
               <div className="flex items-baseline gap-2 mb-1">
                 <span className="font-medium text-[13px] dark:text-white">@{comment.userId?.username || 'unknown'}</span>
                 <span className="text-xs text-gray-500 dark:text-gray-400">
                   {new Date(comment.createdAt || comment.timestamp).toLocaleDateString()}
                 </span>
               </div>
-              <p className="text-sm text-gray-900 dark:text-white">{comment.text}</p>
               
-              <div className="flex items-center gap-4 mt-2">
-                <button className="flex items-center gap-1 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"></path></svg>
-                </button>
-                <button className="flex items-center gap-1 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018a2 2 0 01.485.06l3.76.94m-7 10v5a2 2 0 002 2h.096c.5 0 .905-.405.905-.904 0-.715.211-1.413.608-2.008L17 13V4m-7 10h2m5-10h2a2 2 0 012 2v6a2 2 0 01-2 2h-2.5"></path></svg>
-                </button>
-                <button className="text-xs font-medium text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-100 dark:hover:bg-[#272727] px-3 py-1.5 rounded-full">
-                  Reply
-                </button>
-              </div>
+              {editingCommentId === comment._id ? (
+                <form onSubmit={(e) => handleEditSubmit(e, comment._id)} className="flex flex-col gap-2 mt-1">
+                  <input 
+                    type="text" 
+                    value={editCommentText}
+                    onChange={(e) => setEditCommentText(e.target.value)}
+                    className="w-full border-b border-gray-300 dark:border-[#3f3f3f] focus:border-black dark:focus:border-white outline-none py-1 bg-transparent dark:text-white text-sm"
+                    autoFocus
+                  />
+                  <div className="flex justify-end gap-2">
+                    <button type="button" onClick={() => setEditingCommentId(null)} className="px-3 py-1.5 text-xs font-medium hover:bg-gray-100 dark:hover:bg-[#272727] dark:text-white rounded-full">Cancel</button>
+                    <button type="submit" disabled={!editCommentText.trim()} className="px-3 py-1.5 text-xs font-medium bg-blue-600 text-white rounded-full disabled:bg-gray-100 disabled:dark:bg-[#272727] disabled:text-gray-400">Save</button>
+                  </div>
+                </form>
+              ) : (
+                <p className="text-sm text-gray-900 dark:text-white">{comment.text}</p>
+              )}
+              
+              {!editingCommentId && (
+                <div className="flex items-center gap-4 mt-2">
+                  <button className="flex items-center gap-1 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"></path></svg>
+                  </button>
+                  <button className="flex items-center gap-1 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018a2 2 0 01.485.06l3.76.94m-7 10v5a2 2 0 002 2h.096c.5 0 .905-.405.905-.904 0-.715.211-1.413.608-2.008L17 13V4m-7 10h2m5-10h2a2 2 0 012 2v6a2 2 0 01-2 2h-2.5"></path></svg>
+                  </button>
+                  <button className="text-xs font-medium text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-100 dark:hover:bg-[#272727] px-3 py-1.5 rounded-full">
+                    Reply
+                  </button>
+                  {user && (user.id === comment.userId?._id || user._id === comment.userId?._id) && (
+                    <>
+                      <button onClick={() => { setEditingCommentId(comment._id); setEditCommentText(comment.text); }} className="text-xs font-medium text-blue-600 dark:text-blue-400 hover:underline">
+                        Edit
+                      </button>
+                      <button onClick={() => handleDelete(comment._id)} className="text-xs font-medium text-red-600 dark:text-red-400 hover:underline">
+                        Delete
+                      </button>
+                    </>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         ))}

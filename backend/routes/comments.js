@@ -37,7 +37,27 @@ router.post('/', verifyToken, async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
-
+// Update a comment (requires auth)
+router.put('/:id', verifyToken, async (req, res) => {
+  try {
+    const comment = await Comment.findById(req.params.id);
+    if (!comment) return res.status(404).json({ message: 'Comment not found' });
+    
+    // Ensure the user actually owns this comment before modifying it
+    if (comment.userId.toString() !== req.user.id) {
+      return res.status(403).json({ message: 'You can only edit your own comments' });
+    }
+    
+    const { text } = req.body;
+    comment.text = text;
+    await comment.save();
+    
+    const populatedComment = await Comment.findById(comment._id).populate('userId', 'username avatar');
+    res.json(populatedComment);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 // Delete a comment (requires auth)
 router.delete('/:id', verifyToken, async (req, res) => {
   try {
