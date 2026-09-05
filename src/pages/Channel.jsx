@@ -16,6 +16,47 @@ const Channel = () => {
   
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
+  const [isEditingChannel, setIsEditingChannel] = useState(false);
+  const [channelFormData, setChannelFormData] = useState({
+    channelName: '',
+    description: '',
+    channelAvatar: '',
+    channelBanner: ''
+  });
+
+  const openEditModal = () => {
+    setChannelFormData({
+      channelName: channel.channelName || '',
+      description: channel.description || '',
+      channelAvatar: channel.channelAvatar || '',
+      channelBanner: channel.channelBanner || ''
+    });
+    setIsEditingChannel(true);
+  };
+
+  const handleUpdateChannel = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await api.put(`/channels/${channel._id}`, channelFormData);
+      
+      // Update local channel state
+      setChannel(res.data);
+      
+      // If avatar changed, update global user state
+      if (channelFormData.channelAvatar && channelFormData.channelAvatar !== channel.channelAvatar) {
+        dispatch(updateUser({
+          ...user,
+          avatar: channelFormData.channelAvatar
+        }));
+      }
+      
+      setIsEditingChannel(false);
+    } catch (err) {
+      console.error("Failed to update channel", err);
+      alert("Failed to update channel: " + (err.response?.data?.message || err.message));
+    }
+  };
+
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -119,11 +160,16 @@ const Channel = () => {
         </div>
         <div className="mt-4 md:mt-6">
           {user && user.channels?.includes(channel._id) ? (
-            <Link to="/channel/my-channel">
-              <button className="bg-gray-200 dark:bg-[#3f3f3f] text-gray-800 dark:text-white px-5 py-2.5 rounded-full font-medium hover:bg-gray-300 dark:hover:bg-[#4f4f4f] transition-colors">
-                Manage Videos
+            <div className="flex gap-3">
+              <button onClick={openEditModal} className="bg-gray-200 dark:bg-[#3f3f3f] text-gray-800 dark:text-white px-5 py-2.5 rounded-full font-medium hover:bg-gray-300 dark:hover:bg-[#4f4f4f] transition-colors">
+                Customize Channel
               </button>
-            </Link>
+              <Link to="/channel/my-channel">
+                <button className="bg-gray-200 dark:bg-[#3f3f3f] text-gray-800 dark:text-white px-5 py-2.5 rounded-full font-medium hover:bg-gray-300 dark:hover:bg-[#4f4f4f] transition-colors">
+                  Manage Videos
+                </button>
+              </Link>
+            </div>
           ) : (
             <div className="relative subscribe-dropdown-container">
               {isSubscribed ? (
@@ -203,6 +249,44 @@ const Channel = () => {
           <p className="text-gray-500 dark:text-gray-400 mt-10">This channel has no videos.</p>
         )}
       </div>
+
+      {/* Edit Channel Modal */}
+      {isEditingChannel && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-[#282828] rounded-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div className="p-6 border-b border-gray-200 dark:border-[#303030] flex justify-between items-center">
+              <h3 className="text-xl font-bold dark:text-white">Customize Channel</h3>
+              <button onClick={() => setIsEditingChannel(false)} className="text-gray-500 hover:text-black dark:hover:text-white">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+              </button>
+            </div>
+            <form onSubmit={handleUpdateChannel} className="p-6">
+              <div className="flex flex-col gap-5">
+                <div className="flex flex-col gap-2">
+                  <label className="font-semibold text-gray-800 dark:text-gray-200">Channel Name</label>
+                  <input type="text" value={channelFormData.channelName} onChange={(e) => setChannelFormData({...channelFormData, channelName: e.target.value})} required className="border border-gray-300 dark:border-[#3f3f3f] bg-transparent dark:text-white rounded-lg p-3 outline-none focus:border-blue-500" />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <label className="font-semibold text-gray-800 dark:text-gray-200">Description</label>
+                  <textarea value={channelFormData.description} onChange={(e) => setChannelFormData({...channelFormData, description: e.target.value})} className="border border-gray-300 dark:border-[#3f3f3f] bg-transparent dark:text-white rounded-lg p-3 outline-none focus:border-blue-500 h-24 resize-none" />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <label className="font-semibold text-gray-800 dark:text-gray-200">Channel Avatar URL</label>
+                  <input type="url" value={channelFormData.channelAvatar} onChange={(e) => setChannelFormData({...channelFormData, channelAvatar: e.target.value})} required className="border border-gray-300 dark:border-[#3f3f3f] bg-transparent dark:text-white rounded-lg p-3 outline-none focus:border-blue-500" />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <label className="font-semibold text-gray-800 dark:text-gray-200">Channel Banner URL</label>
+                  <input type="url" value={channelFormData.channelBanner} onChange={(e) => setChannelFormData({...channelFormData, channelBanner: e.target.value})} className="border border-gray-300 dark:border-[#3f3f3f] bg-transparent dark:text-white rounded-lg p-3 outline-none focus:border-blue-500" />
+                </div>
+                <div className="flex justify-end gap-3 mt-4">
+                  <button type="button" onClick={() => setIsEditingChannel(false)} className="px-5 py-2 font-medium text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white">Cancel</button>
+                  <button type="submit" className="px-5 py-2 bg-blue-600 text-white font-medium rounded-full hover:bg-blue-700">Save Changes</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
