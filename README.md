@@ -42,21 +42,56 @@ Before you begin, ensure you have the following installed on your local machine:
 
 ## 💻 Getting Started
 
-Follow these instructions to set up the project locally.
+### Quick Start (Automated)
 
-### 1. Clone the repository
+Automation scripts are included that handle cloning, installing dependencies, seeding the database, and starting both servers.
+
+**1. Create the `.env` file**
+
+After cloning, create a `.env` file inside the `backend/` directory:
+```env
+PORT=5000
+MONGODB_URI=mongodb://localhost:27017/ytclone
+JWT_SECRET=your_super_secret_jwt_key
+```
+
+**2. Run the setup script**
+
+**Windows (PowerShell):**
+```powershell
+.\run.ps1
+```
+
+**macOS / Linux:**
+```bash
+chmod +x run.sh
+./run.sh
+```
+
+The script will install all dependencies, seed the database with sample data, and start both the backend and frontend servers automatically.
+
+---
+
+### Manual Setup
+
+If you prefer to set things up manually:
+
+#### 1. Clone the repository
 
 ```bash
 git clone https://github.com/its-sorakun/youtube-clone.git
 cd youtube-clone
 ```
 
-### 2. Backend Setup
+#### 2. Install dependencies
 
 ```bash
+npm install
 cd backend
 npm install
 ```
+
+#### 3. Create the `.env` file
 
 Create a `.env` file in the `backend` directory with the following variables:
 ```env
@@ -65,25 +100,26 @@ MONGODB_URI=mongodb://localhost:27017/ytclone
 JWT_SECRET=your_super_secret_jwt_key
 ```
 
-Start the backend development server:
+#### 4. Seed the database
+
+```bash
+node seed.js
+cd ..
+```
+
+#### 5. Start the servers
+
+Start the backend (from the `backend/` directory):
 ```bash
 npm run dev
 ```
-The API server will be running on `http://localhost:5000`.
 
-### 3. Frontend Setup
-
-Open a new terminal and navigate to the root directory of the project:
-
-```bash
-npm install
-```
-
-Start the Vite development server:
+Open a new terminal at the project root and start the frontend:
 ```bash
 npm run dev
 ```
-The frontend will be running on `http://localhost:5173`.
+
+The backend will be running on `http://localhost:5000` and the frontend on `http://localhost:5173`.
 
 ## 📁 Folder Structure
 
