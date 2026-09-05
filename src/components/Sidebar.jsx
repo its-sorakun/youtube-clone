@@ -1,10 +1,30 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import api from '../api/axios.js';
 
 const Sidebar = () => {
   const isExpanded = useSelector((state) => state.sidebar.isExpanded);
   const user = useSelector((state) => state.auth.user);
+  const [subscriptions, setSubscriptions] = useState([]);
+
+  useEffect(() => {
+    const fetchSubscriptions = async () => {
+      if (user) {
+        try {
+          const res = await api.get('/channels/subscribed');
+          setSubscriptions(res.data);
+        } catch (err) {
+          console.error("Failed to fetch subscriptions", err);
+        }
+      } else {
+        setSubscriptions([]);
+      }
+    };
+    
+    // Fetch subscriptions whenever the user's global subscriptions array changes
+    fetchSubscriptions();
+  }, [user?.subscriptions]);
 
   const navItems = [
     { 
@@ -65,6 +85,29 @@ const Sidebar = () => {
               <span className="text-gray-900 ml-5 text-sm">Sports</span>
             </NavLink>
           </div>
+
+          {user && subscriptions.length > 0 && (
+            <>
+              <hr className="my-2 border-gray-200" />
+              <div className="px-3 py-2">
+                <h3 className="text-sm font-semibold text-gray-900 mb-2">Subscriptions</h3>
+                {subscriptions.map(sub => (
+                  <NavLink 
+                    key={sub._id} 
+                    to={`/channel/${sub._id}`} 
+                    className="flex items-center px-3 py-2 rounded-lg hover:bg-gray-100 mb-1"
+                  >
+                    <img 
+                      src={sub.channelAvatar || sub.owner?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(sub.channelName)}&background=random`} 
+                      alt={sub.channelName} 
+                      className="w-6 h-6 rounded-full object-cover"
+                    />
+                    <span className="text-gray-900 ml-5 text-sm truncate">{sub.channelName}</span>
+                  </NavLink>
+                ))}
+              </div>
+            </>
+          )}
         </>
       )}
     </aside>

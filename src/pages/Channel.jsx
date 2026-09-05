@@ -14,6 +14,19 @@ const Channel = () => {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('Home');
   
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (!e.target.closest('.subscribe-dropdown-container')) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, []);
+
   useEffect(() => {
     const fetchChannel = async () => {
       setLoading(true);
@@ -49,6 +62,9 @@ const Channel = () => {
         ...user,
         subscriptions: res.data.subscriptions
       }));
+      
+      // Close dropdown if it was open
+      setIsDropdownOpen(false);
     } catch (err) {
       console.error("Failed to subscribe", err);
       alert("Failed to subscribe: " + (err.response?.data?.error || err.message));
@@ -86,7 +102,7 @@ const Channel = () => {
       {/* Channel Header */}
       <div className="flex flex-col md:flex-row items-center md:items-start gap-6 mt-6 px-4 md:px-10">
         <img 
-          src={channel.channelAvatar || channel.owner?.avatar || `https://picsum.photos/seed/${channel._id}/150/150`} 
+          src={channel.channelAvatar || channel.owner?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(channel.channelName)}&background=random`} 
           alt={channel.channelName} 
           className="w-24 h-24 md:w-32 md:h-32 rounded-full object-cover shrink-0"
         />
@@ -107,16 +123,44 @@ const Channel = () => {
               Your Channel
             </button>
           ) : (
-            <button 
-              onClick={handleSubscribe}
-              className={`px-5 py-2.5 rounded-full font-medium transition-colors ${
-                isSubscribed 
-                  ? 'bg-gray-100 text-gray-800 hover:bg-gray-200' 
-                  : 'bg-black text-white hover:bg-gray-800'
-              }`}
-            >
-              {isSubscribed ? 'Subscribed' : 'Subscribe'}
-            </button>
+            <div className="relative subscribe-dropdown-container">
+              {isSubscribed ? (
+                <button 
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-full font-medium transition-colors bg-gray-100 text-gray-800 hover:bg-gray-200"
+                >
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                    <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"></path>
+                  </svg>
+                  Subscribed
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                    <path d="M7 10l5 5 5-5z"></path>
+                  </svg>
+                </button>
+              ) : (
+                <button 
+                  onClick={handleSubscribe}
+                  className="px-5 py-2.5 rounded-full font-medium transition-colors bg-black text-white hover:bg-gray-800"
+                >
+                  Subscribe
+                </button>
+              )}
+              
+              {/* Dropdown Menu */}
+              {isDropdownOpen && isSubscribed && (
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden z-50 py-2">
+                  <button 
+                    onClick={handleSubscribe}
+                    className="w-full text-left px-4 py-3 hover:bg-gray-100 flex items-center gap-3 text-sm text-gray-900"
+                  >
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                      <path d="M19 13H5v-2h14v2z"></path>
+                    </svg>
+                    Unsubscribe
+                  </button>
+                </div>
+              )}
+            </div>
           )}
         </div>
       </div>

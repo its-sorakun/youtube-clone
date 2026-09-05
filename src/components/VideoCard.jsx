@@ -14,7 +14,7 @@ const VideoCard = ({ video }) => {
       <div className="flex mt-3 gap-3">
         <Link to={`/channel/${video.channelId?._id || video.channelId || 'unknown'}`}>
           <img 
-            src={video.channelId?.channelAvatar || video.channelAvatar || video.uploader?.avatar || `https://picsum.photos/seed/${video.channelId?._id || video.channelId || video.uploader?._id || video._id}/150/150`} 
+            src={video.channelId?.channelAvatar || video.channelAvatar || video.uploader?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(video.channelId?.channelName || video.channelName || video.uploader?.username || 'User')}&background=random`} 
             alt="channel avatar" 
             className="w-9 h-9 rounded-full object-cover flex-shrink-0"
           />

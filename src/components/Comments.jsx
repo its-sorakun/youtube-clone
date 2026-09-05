@@ -71,7 +71,7 @@ const Comments = ({ comments = [], videoId, setComments }) => {
         {comments.map((comment) => (
           <div key={comment._id} className="flex gap-4">
             <img 
-              src={comment.userId?.avatar || `https://picsum.photos/seed/${comment.userId?._id}/150/150`} 
+              src={comment.userId?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(comment.userId?.username || 'User')}&background=random`} 
               alt="User Avatar" 
               className="w-10 h-10 rounded-full object-cover"
             />

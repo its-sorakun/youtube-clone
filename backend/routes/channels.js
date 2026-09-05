@@ -5,6 +5,31 @@ import { verifyToken } from '../middleware/auth.js';
 
 const router = express.Router();
 
+// Get subscribed channels for the current user
+router.get('/subscribed', verifyToken, async (req, res) => {
+  try {
+    const userId = req.user.id || req.user._id;
+    // Populate both subscriptions and their owners to ensure we have avatars
+    const user = await User.findById(userId).populate({
+      path: 'subscriptions',
+      select: 'channelName channelAvatar subscribers owner',
+      populate: {
+        path: 'owner',
+        select: 'avatar'
+      }
+    });
+    
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    
+    res.json(user.subscriptions || []);
+  } catch (error) {
+    console.error("Fetch subscriptions error:", error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // Get channel by ID
 router.get('/:id', async (req, res) => {
   try {

@@ -14,6 +14,18 @@ const VideoPlayer = () => {
   const [comments, setComments] = useState([]);
   const [recommended, setRecommended] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (!e.target.closest('.subscribe-dropdown-container')) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, []);
 
   useEffect(() => {
     dispatch(setSidebarExpanded(false));
@@ -64,6 +76,9 @@ const VideoPlayer = () => {
         ...user,
         subscriptions: res.data.subscriptions
       }));
+      
+      // Close dropdown if it was open
+      setIsDropdownOpen(false);
     } catch (err) {
       console.error("Failed to subscribe", err);
       alert("Failed to subscribe: " + (err.response?.data?.error || err.message));
@@ -129,7 +144,7 @@ const VideoPlayer = () => {
           <div className="flex items-center gap-3">
             <Link to={`/channel/${video.channelId?._id || 'unknown'}`}>
               <img 
-                src={video.channelId?.channelAvatar || video.uploader?.avatar || `https://picsum.photos/seed/${video.channelId?._id || video.channelId || video.uploader?._id || video._id}/150/150`} 
+                src={video.channelId?.channelAvatar || video.uploader?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(video.channelId?.channelName || 'User')}&background=random`} 
                 alt="Channel Avatar" 
                 className="w-10 h-10 rounded-full object-cover"
               />
@@ -149,16 +164,44 @@ const VideoPlayer = () => {
                 Your Channel
               </button>
             ) : (
-              <button 
-                onClick={handleSubscribe}
-                className={`px-4 py-2 rounded-full font-medium ml-4 transition-colors ${
-                  user?.subscriptions?.includes(video.channelId?._id) 
-                    ? 'bg-gray-100 text-gray-800 hover:bg-gray-200' 
-                    : 'bg-black text-white hover:bg-gray-800'
-                }`}
-              >
-                {user?.subscriptions?.includes(video.channelId?._id) ? 'Subscribed' : 'Subscribe'}
-              </button>
+              <div className="relative subscribe-dropdown-container ml-4">
+                {user?.subscriptions?.includes(video.channelId?._id) ? (
+                  <button 
+                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                    className="flex items-center gap-2 px-4 py-2 rounded-full font-medium transition-colors bg-gray-100 text-gray-800 hover:bg-gray-200"
+                  >
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                      <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"></path>
+                    </svg>
+                    Subscribed
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                      <path d="M7 10l5 5 5-5z"></path>
+                    </svg>
+                  </button>
+                ) : (
+                  <button 
+                    onClick={handleSubscribe}
+                    className="px-4 py-2 rounded-full font-medium transition-colors bg-black text-white hover:bg-gray-800"
+                  >
+                    Subscribe
+                  </button>
+                )}
+
+                {/* Dropdown Menu */}
+                {isDropdownOpen && user?.subscriptions?.includes(video.channelId?._id) && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden z-50 py-2">
+                    <button 
+                      onClick={handleSubscribe}
+                      className="w-full text-left px-4 py-3 hover:bg-gray-100 flex items-center gap-3 text-sm text-gray-900"
+                    >
+                      <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                        <path d="M19 13H5v-2h14v2z"></path>
+                      </svg>
+                      Unsubscribe
+                    </button>
+                  </div>
+                )}
+              </div>
             )}
           </div>
           
