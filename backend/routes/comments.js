@@ -19,12 +19,13 @@ router.get('/video/:videoId', async (req, res) => {
 // Add a comment (requires auth)
 router.post('/', verifyToken, async (req, res) => {
   try {
-    const { text, videoId } = req.body;
+    const { text, videoId, parentId } = req.body;
     
     const newComment = new Comment({
       text,
       videoId,
-      userId: req.user.id
+      userId: req.user.id,
+      parentId: parentId || null
     });
     
     await newComment.save();
